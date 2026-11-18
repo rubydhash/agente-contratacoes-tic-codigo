@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Recusa mensagens de commit com marca de autoria de ferramenta de IA (AGENTS.md, regra 9).
+# Ativar uma vez por clone:  git config core.hooksPath scripts/hooks
+if grep -qiE '^[[:space:]]*co-authored-by:|generated with' "$1"; then
+  echo "commit-msg: a mensagem contém 'Co-Authored-By' ou 'Generated with'." >&2
+  echo "Os documentos deste repositório são subscritos por pessoas; remova a marca de ferramenta." >&2
+  exit 1
+fi
