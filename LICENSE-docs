@@ -1,0 +1,17 @@
+Documentação, templates, checklists e skills — Creative Commons Atribuição 4.0 Internacional (CC BY 4.0)
+
+Copyright (c) 2026 Neuton Martins
+
+Abrange: README.md, AGENTS.md, CLAUDE.md, CONTRIBUTING.md, CHANGELOG.md e os arquivos em docs/,
+decisoes/, normativos/, skills/, templates/ (exceto o texto dos modelos oficiais reproduzido neles)
+e os esqueletos em dfd/, etp/, tr/ e listas-verificacao/.
+
+Você pode copiar, redistribuir, adaptar e usar comercialmente este material, desde que dê o
+crédito apropriado, indique a licença e informe se fez alterações.
+
+Texto integral da licença: https://creativecommons.org/licenses/by/4.0/legalcode.pt
+Resumo: https://creativecommons.org/licenses/by/4.0/deed.pt-br
+
+Não estão abrangidos: o conteúdo de referencia/ e o texto literal dos modelos da AGU e do
+Governo Digital reproduzido em templates/ e tr/, que pertencem aos órgãos emissores (veja
+referencia/README.md). O código em scripts/ está sob a licença MIT (arquivo LICENSE).
