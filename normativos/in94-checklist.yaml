@@ -1,0 +1,357 @@
+# Checklist normativo — IN SGD/ME nº 94, de 23 de dezembro de 2022
+# Mapeia cada exigência da IN 94 para a seção correspondente do ETP/TR.
+# Fonte canônica: referencia/normativos-md/in-94-2022-sgd.md
+#
+# Convenção:
+#   secao        — caminho relativo do arquivo da seção que cumpre a exigência
+#   fonte        — referência exata do dispositivo da IN 94
+#   exige        — itens objetivos que precisam constar na seção
+#   perguntas    — perguntas de auto-validação (aplicáveis pelo agente revisor)
+#   relacionado  — outros dispositivos que se conectam a este
+
+versao_in94: "23/12/2022"
+ambito: "Contratações de soluções de TIC pelos órgãos integrantes do SISP"
+
+# =====================================================================
+# ETP — Estudo Técnico Preliminar (Art. 11)
+# =====================================================================
+etp:
+
+  necessidades_e_requisitos:
+    secao: "etp/04-necessidades-negocio.md; etp/05-necessidades-tecnologicas.md; etp/06-demais-requisitos.md; etp/07-estimativa-demanda.md"
+    fonte: "IN 94/2022, art. 11, I"
+    exige:
+      - definicao_necessidades_negocio
+      - definicao_necessidades_tecnologicas
+      - requisitos_necessarios_e_suficientes
+      - quantitativo_de_bens_servicos_detalhado_motivado
+      - forma_de_calculo_do_quantitativo
+    perguntas:
+      - "As necessidades de negócio estão separadas das necessidades tecnológicas?"
+      - "Há memória de cálculo do quantitativo?"
+      - "A justificativa do quantitativo é motivada (não genérica)?"
+
+  analise_comparativa_solucoes:
+    secao: "etp/08-levantamento-solucoes.md; etp/09-analise-comparativa-solucoes.md; etp/10-registro-solucoes-inviaveis.md"
+    fonte: "IN 94/2022, art. 11, II, alíneas a-j"
+    exige:
+      - solucoes_em_outros_orgaos_e_entes
+      - alternativas_de_mercado
+      - softwares_disponiveis_portaria_sti_46_2016
+      - aderencia_padroes_governo  # ePing, eMag, ePwg, Design System gov.br, ICP-Brasil, e-ARQ
+      - necessidades_de_adequacao_do_ambiente
+      - diferentes_modelos_de_prestacao
+      - diferentes_tipos_de_solucao
+      - aquisicao_vs_servico
+      - ampliacao_vs_substituicao_da_solucao_atual
+      - metricas_de_prestacao_e_pagamento
+    perguntas:
+      - "Foram pesquisadas soluções em pelo menos 2 outros órgãos federais?"
+      - "Há análise explícita do trade-off bem vs. serviço?"
+      - "Soluções inviáveis foram registradas (IN 94 art. 11 §1º) com justificativa?"
+
+  analise_comparativa_custos:
+    secao: etp/11-analise-comparativa-custos-tco.md
+    fonte: "IN 94/2022, art. 11, III, alíneas a-b"
+    exige:
+      - tco_por_solucao_viavel  # ciclo de vida: aquisição, insumos, garantia, manutenção, migração, treinamento
+      - memoria_de_calculo_referenciada
+    perguntas:
+      - "O TCO foi calculado para todas as soluções tecnicamente viáveis?"
+      - "Cada custo cita a fonte (Painel, contratação anterior, fabricante)?"
+    relacionado: ["referencia/planilhas/01_modelo-planilha-tco-e-analise-comparativa-de-custos-tic-geral.xlsx"]
+
+  estimativa_custo_total:
+    secao: etp/13-estimativa-custo-total.md
+    fonte: "IN 94/2022, art. 11, IV"
+    exige:
+      - custo_total_da_contratacao
+      - alinhamento_com_in_seges_65_2021
+    relacionado: ["IN SEGES/ME 65/2021"]
+
+  declaracao_viabilidade:
+    secao: etp/21-declaracao-viabilidade.md
+    fonte: "IN 94/2022, art. 11, V"
+    exige:
+      - justificativa_da_solucao_escolhida
+      - beneficios_em_eficacia
+      - beneficios_em_eficiencia
+      - beneficios_em_efetividade
+      - beneficios_em_economicidade
+    perguntas:
+      - "A escolha está conectada à análise comparativa (II) e ao TCO (III)?"
+
+  aprovacao_etp:
+    secao: etp/22-responsaveis.md
+    fonte: "IN 94/2022, art. 11, §2º e §3º"
+    exige:
+      - assinatura_integrante_tecnico
+      - assinatura_integrante_requisitante
+      - assinatura_autoridade_maxima_tic  # ou superior, se autoridade compuser equipe (§3º)
+
+# =====================================================================
+# TR — Termo de Referência (Art. 12)
+# =====================================================================
+tr:
+
+  definicao_objeto:
+    secao: tr/01-condicoes-gerais.md
+    fonte: "IN 94/2022, art. 12, I; art. 13"
+    exige:
+      - objeto_preciso_suficiente_claro
+      - prazo_de_duracao_do_contrato
+      - possibilidade_de_prorrogacao
+      - vedacao_especificacoes_excessivas
+    perguntas:
+      - "O prazo respeita arts. 105-114 da Lei 14.133?"
+      - "Se for sistema estruturante (art. 13 §2º), justificou os 15 anos?"
+
+  codigos_catalogo:
+    secao: tr/01-condicoes-gerais.md
+    fonte: "IN 94/2022, art. 12, II"
+    exige:
+      - catmat_ou_catser_por_item
+
+  descricao_solucao:
+    secao: tr/03-descricao-solucao.md
+    fonte: "IN 94/2022, art. 12, III; art. 14"
+    exige:
+      - quantitativo_detalhado_motivado
+      - ciclo_de_vida_do_objeto
+
+  justificativa_contratacao:
+    secao: tr/02-fundamentacao.md
+    fonte: "IN 94/2022, art. 12, IV; art. 15"
+    exige:
+      - alinhamento_com_planejamento_art_6  # PDTIC, PCA, PEI
+      - relacao_necessidade_x_volume_x_caracteristicas
+      - forma_calculo_quantitativo
+      - resultados_e_beneficios
+      - motivacao_para_adesoes_se_arp
+    perguntas:
+      - "A justificativa é específica (não genérica)?"
+      - "Há vínculo explícito com o Tema do PDTI vigente? (ver normativos/planejamento-institucional-checklist.yaml)"
+
+  requisitos:
+    secao: tr/04-requisitos.md
+    fonte: "IN 94/2022, art. 12, V; art. 16"
+    exige_requisitante:
+      - requisitos_de_negocio
+      - requisitos_de_capacitacao
+      - requisitos_legais
+      - requisitos_de_manutencao
+      - requisitos_temporais
+      - requisitos_seguranca_privacidade  # com técnico
+      - requisitos_sociais_ambientais_culturais
+    exige_tecnico:
+      - arquitetura_tecnologica
+      - projeto_e_implementacao
+      - implantacao
+      - garantia_e_manutencao
+      - capacitacao
+      - experiencia_profissional_da_equipe
+      - formacao_da_equipe
+      - metodologia_de_trabalho
+      - seguranca_da_informacao_e_privacidade
+    perguntas:
+      - "Há alinhamento explícito entre requisitos (I) e especificações tecnológicas (II)? (art. 16, parágrafo único)"
+
+  responsabilidades:
+    secao: tr/05-papeis-responsabilidades.md
+    fonte: "IN 94/2022, art. 12, VI; art. 17"
+    exige_contratante:
+      - nomear_gestor_e_fiscais
+      - encaminhar_demanda_via_OS_ou_OFB
+      - receber_objeto
+      - aplicar_sancoes
+      - liquidar_e_pagar
+      - comunicar_ocorrencias
+      - definir_produtividade_minima
+      - prever_propriedade_intelectual_para_administracao
+    exige_contratada:
+      - indicar_preposto
+      - atender_fiscalizacao
+      - reparar_danos
+      - propiciar_meios_de_fiscalizacao
+      - manter_condicoes_habilitacao
+      - manter_equipe_tecnica
+      - manter_produtividade
+      - ceder_propriedade_intelectual
+      - fazer_transicao_contratual
+
+  modelo_execucao:
+    secao: tr/06-modelo-execucao.md
+    fonte: "IN 94/2022, art. 12, VII; art. 18"
+    exige:
+      - rotinas_de_execucao  # prazos, horários, locais, documentação, papéis
+      - quantificacao_volume_de_servicos
+      - mecanismos_formais_de_comunicacao  # OS/OFB
+      - forma_de_pagamento_por_resultado
+      - termo_de_compromisso  # art. 18 V a — referencia/templates-gov-digital/12-termo-de-compromisso (PENDENTE)
+      - termo_de_ciencia       # art. 18 V b — referencia/templates-gov-digital/11-termo-de-ciencia (PENDENTE)
+
+  modelo_gestao:
+    secao: tr/07-modelo-gestao.md
+    fonte: "IN 94/2022, art. 12, VII; art. 19"
+    exige:
+      - criterios_de_aceitacao  # métricas, indicadores, NMS
+      - procedimentos_teste_inspecao
+      - retencao_e_glosa
+      - sancoes_administrativas  # arts. 155-163 Lei 14.133
+      - procedimentos_pagamento
+
+  estimativa_precos:
+    secao: tr/11-estimativas-valor.md
+    fonte: "IN 94/2022, art. 12, VIII; art. 20"
+    exige:
+      - orcamento_detalhado_com_precos_unitarios
+      - aderencia_in_seges_65_2021
+      - uso_de_pmc_tic_quando_aplicavel
+    relacionado: ["IN SEGES/ME 65/2021"]
+
+  orcamento_cronograma:
+    secao: "tr/12-adequacao-orcamentaria.md; tr/13-disposicoes-finais.md (cronograma)"
+    fonte: "IN 94/2022, art. 12, IX; art. 21"
+    exige:
+      - impacto_no_orcamento_e_fontes
+      - cronograma_fisico_financeiro_por_etapa
+
+  regime_execucao:
+    secao: tr/10-selecao-fornecedor-regime.md
+    fonte: "IN 94/2022, art. 12, X; art. 22"
+    opcoes_validas:
+      - empreitada_por_preco_unitario
+      - empreitada_por_preco_global
+      - empreitada_integral
+      - contratacao_por_tarefa
+      - fornecimento_e_prestacao_de_servico_associado
+
+  criterios_selecao:
+    secao: tr/10-selecao-fornecedor-regime.md
+    fonte: "IN 94/2022, art. 12, XI; art. 23"
+    exige:
+      - criterio_de_julgamento  # menor preço | maior desconto | técnica e preço | maior retorno
+      - criterios_habilitacao_tecnica
+      - vedacoes_observadas  # entidade certificadora, atestado de fabricante, pontuação por tempo de trabalho
+    perguntas:
+      - "Se for técnica e preço (art. 23 par. único), justificou no autos?"
+
+  correcao_monetaria:
+    secao: tr/08-criterios-medicao-pagamento.md
+    fonte: "IN 94/2022, art. 12, XII; art. 24"
+    exige_se_servico_tic:
+      - icti  # Índice de Custos de TI (IN 94, art. 24); obrigatório quando há reajuste
+
+  parcelamento_e_consorcio:
+    secao: tr/10-selecao-fornecedor-regime.md  # também (consórcio); subcontratação em tr/04-requisitos.md
+    fonte: "IN 94/2022, art. 12, §2º"
+    exige:
+      - decisao_sobre_parcelamento_justificada
+      - decisao_sobre_consorcio_subcontratacao_justificada
+
+  aprovacao_tr:
+    fonte: "IN 94/2022, art. 12, §6º"
+    exige:
+      - assinatura_equipe_planejamento
+      - assinatura_autoridade_maxima_tic
+      - aprovacao_autoridade_competente
+
+# =====================================================================
+# Vedações gerais (Art. 5º)
+# =====================================================================
+vedacoes:
+  fonte: "IN 94/2022, art. 5º"
+  itens:
+    - estabelecer_vinculo_de_subordinacao_com_funcionarios_da_contratada
+    - prever_em_edital_exigencias_que_constituam_intervencao_indevida_no_planejamento_da_contratada
+    - prever_em_edital_que_a_contratada_apresente_funcionarios_com_marca_ou_caracteristica_pessoal
+    - reembolsar_salarios_pela_contratante
+    - contratar_por_postos_de_trabalho_alocados_para_servicos_de_TIC
+
+# =====================================================================
+# Anexo II — Enquadramento como solução de TIC (art. 2º, VII)
+# Acrescido em 2026-11-06 (decisoes/2026-11-06-checklist-in94-anexos.md).
+# =====================================================================
+anexo_ii:
+  enquadramento:
+    secao: etp/02-descricao-necessidade.md
+    fonte: "IN 94/2022, art. 2º, VII; Anexo II, item 1 (categorias 1.1 a 1.13)"
+    exige:
+      - categoria_do_anexo_ii_indicada  # basta uma; indicar a principal e, se houver, a complementar
+      - categoria_coerente_com_a_natureza_do_objeto  # bens x serviços: 1.12 só lista serviços
+      - exclusoes_da_categoria_verificadas  # alíneas "b" de cada item
+    perguntas:
+      - "A categoria indicada descreve bens ou serviços, conforme a natureza do objeto?"
+      - "O objeto cai em alguma exclusão da alínea 'b' da categoria?"
+      - "O enquadramento indica quais diretrizes do Anexo I passam a se aplicar?"
+    relacionado: ["anexo_i.licenciamento_software", "anexo_i.seguranca_informacao_privacidade", "anexo_i.aquisicao_ativos_tic"]
+
+# =====================================================================
+# Anexo I — Diretrizes específicas de planejamento da contratação
+# Acrescido em 2026-11-06. Itens 2 a 6 (autenticação, desenvolvimento de software,
+# centro de dados/nuvem, empresas públicas, portais) entram quando o objeto os tocar.
+# =====================================================================
+anexo_i:
+
+  licenciamento_software:
+    secao: "etp/09-analise-comparativa-solucoes.md; etp/17-providencias.md"
+    fonte: "IN 94/2022, Anexo I, itens 1.1 a 1.8"
+    aplica_se: "objeto com licença, subscrição ou serviço agregado (atualização, manutenção, suporte)"
+    exige:
+      - volume_de_licencas_alinhado_a_necessidade        # 1.3.1 e 1.5
+      - necessidade_de_servicos_agregados_avaliada       # 1.3.2
+      - alternativas_de_fabricantes_e_revendas_prospectadas  # 1.3.3
+      - medidas_contra_dependencia_tecnologica           # 1.4.1 (padrões abertos, migração)
+      - preco_manter_vs_substituir_com_custos_indiretos  # 1.4.2
+      - compatibilidade_de_produtos_alternativos         # 1.4.3
+      - suporte_por_concorrentes_avaliado                # 1.4.4
+      - custo_beneficio_suporte_e_atualizacao            # 1.4.5
+      - ausencia_de_cobranca_retroativa_reativacao_ou_correcao  # 1.5.1 a 1.5.3
+      - suporte_e_atualizacao_conjugados_so_se_ambos_necessarios  # 1.5.4
+      - demanda_gradual_ou_justificativa_do_fornecimento_unico   # 1.6
+      - declaracao_de_nao_ocorrencia_de_registro_de_oportunidade # 1.7
+      - prazos_e_niveis_compativeis_com_o_fabricante     # 1.8
+    perguntas:
+      - "Há licença comprada sem uso previsto no dimensionamento?"
+      - "O ETP diz por que suporte e atualização são necessários, e se ambos?"
+      - "Quais padrões abertos permitem substituir a solução no futuro?"
+      - "Os prazos de reposição e atendimento exigidos cabem no serviço que o fabricante vende?"
+      - "Em adesão: as cláusulas da ata respeitam o item 1.5? A declaração do item 1.7 foi pedida?"
+
+  seguranca_informacao_privacidade:
+    secao: "etp/06-demais-requisitos.md; tr/04-requisitos.md; tr/09-sancoes-glosa.md"
+    fonte: "IN 94/2022, Anexo I, itens 7.1 a 7.5; Guia de Requisitos e Obrigações SIP (SGD, v3.2) — referencia/normativos-md/guia-requisitos-sip-v3-2-2024.md"
+    exige:
+      - requisitos_sip_no_tr                       # 7.1
+      - disponibilidade                            # 7.2.1
+      - prevencao_de_vazamento_e_fraude            # 7.2.2 (sigilo, descarte seguro)
+      - gestao_de_riscos_sip_da_contratada_ou_nao_aplicacao  # 7.2.3
+      - trilha_de_auditoria                        # 7.2.4
+      - continuidade_do_negocio                    # 7.2.5
+      - lgpd_e_informacao_classificada             # 7.2.6
+      - auditoria_de_conformidade_sip              # 7.2.7
+      - gestao_de_incidentes                       # 7.2.8
+      - software_seguro                            # 7.2.9
+      - gestao_de_mudancas_e_capacidade            # 7.2.10
+      - criptografia_logs_politicas                # 7.2.11
+      - guia_sip_do_sisp_considerado               # 7.3 e 7.5
+      - sancao_para_cada_requisito_sip             # 7.4
+    perguntas:
+      - "Cada alínea do item 7.2 tem requisito no ETP/TR ou registro expresso de não aplicação?"
+      - "Cada requisito de SIP tem ao menos uma sanção correspondente no contrato (7.4)?"
+      - "Em adesão: o que a ata não prevê foi levado ao aceite, à ordem de fornecimento ou ao contrato?"
+
+  aquisicao_ativos_tic:
+    secao: "etp/06-demais-requisitos.md; etp/17-providencias.md"
+    fonte: "IN 94/2022, Anexo I, itens 8.1 a 8.3; Decreto nº 7.174/2010, art. 3º, II e III; Portaria Inmetro nº 304/2023 (que revogou a nº 170/2012 citada no item 8.3)"
+    aplica_se: "aquisição de bens de TIC"
+    exige:
+      - bem_conferido_no_anexo_a_do_regulamento_inmetro_vigente  # 8.3; 170/2012 revogada pela 304/2023
+      - certificacao_exigida_ou_dispensa_justificada            # 8.1 e 8.2
+      - normas_tecnicas_de_seguranca_e_emc_indicadas            # Decreto 7.174, art. 3º, I
+      - origem_dos_importados_e_quitacao_de_tributos_na_entrega  # Decreto 7.174, art. 3º, III
+      - ppb_tratado_como_preferencia_e_nao_condicao_de_participacao  # Lei 8.248, art. 3º; Decreto 7.174, arts. 5º e 8º
+    perguntas:
+      - "O bem consta do Anexo A da Portaria Inmetro nº 304/2023? Se não, o ETP diz isso?"
+      - "Se a certificação não se aplica, a segurança e a EMC são comprovadas por norma técnica (IEC/CISPR) com documento do fabricante?"
+      - "O PPB aparece como condição de participação? Se sim, há PPB fixado para o bem?"

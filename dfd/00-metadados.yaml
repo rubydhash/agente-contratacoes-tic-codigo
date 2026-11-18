@@ -1,0 +1,58 @@
+# Metadados específicos do DFD (complementares aos de etp/00-metadados.yaml).
+# Carregar este arquivo APÓS o de ETP no build, para que valores aqui
+# sobrescrevam os do ETP onde houver divergência (ex.: número do DFD após
+# registro no PGC/Compras.gov.br).
+
+dfd:
+  numero: "<nº/ano no PGC — preencher após o registro>"
+  # Se este DFD revisa ou complementa outro já registrado no PGC, informar abaixo;
+  # caso contrário, deixar vazio.
+  dfd_predecessor: ""
+  relacao_com_predecessor: ""   # revisao_complementar | substituicao | ""
+  motivo_da_revisao: ""
+
+  # Base normativa do conteúdo mínimo do DFD.
+  fonte_normativa_minima:
+    - "Decreto nº 10.947/2022, art. 8º (I a VIII) — conteúdo mínimo do DFD no PGC"
+    - "IN SGD/ME nº 94/2022, art. 10, §1º (alíneas a a h) — espelha o Decreto, aplicável a contratações de TIC"
+    - "IN SGD/ME nº 94/2022, art. 4º, X — definição do DFD"
+    - "Lei nº 14.133/2021, art. 12, §1º (PCA/PGC)"
+
+  # Campos-chave do DFD (espelhados em 01-dfd.md, aqui em forma estruturada
+  # para uso em conferência cruzada com ETP/TR e pelo scripts/validar.sh).
+  grau_prioridade: "<alto | médio | baixo>"
+  grau_prioridade_metodologia: "<ato normativo interno que estabeleça o critério de classificação, se houver>"
+  data_pretendida_conclusao: "<AAAA-MM-DD>"
+  area_requisitante: "<preencher>"
+  area_tecnica: "<preencher>"
+  responsavel_dfd:
+    nome: "<preencher>"
+    matricula: "<preencher>"
+    cargo: "<preencher>"
+  comissao_contratacao:
+    - "<a designar — ver etp/00-metadados.yaml > equipe_planejamento>"
+
+  # Catalogação (parágrafo único do art. 8º do Decreto nº 10.947).
+  catalogo:
+    pdm_classe: "<preencher>"
+    natureza: "<preencher>"
+    catmat_catser: "<preencher — conferir com tr/01-condicoes-gerais.md>"
+
+  # Alinhamento ao PCA — registro no PNCP.
+  pca:
+    ano: "<AAAA>"
+    id_pncp: "<preencher>"
+    data_publicacao_pncp: "<AAAA-MM-DD>"
+    id_item: "<preencher>"
+    identificador_futura_contratacao: "<preencher>"
+
+  # Vinculação ou dependência (Decreto 10.947 art. 8º VII; IN 94 art. 10 §1º "g").
+  vinculacao_outro_dfd: "<true|false>"
+  observacao_vinculacao: ""
+  # Contratos existentes relacionados. relacao: substitutivo | complementar |
+  # complementar_habilitador. referencia_preliminar: true enquanto não conferido.
+  dependencia_complementar_contratos_existentes: []
+
+# Convenção de revisões — incrementa a cada PR aprovado em main.
+versao_documento: "0.1.0"
+data_ultima_alteracao: "2026-09-29"

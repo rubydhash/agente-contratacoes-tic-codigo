@@ -1,0 +1,66 @@
+# Análise comparativa de custos — TCO por solução tecnicamente viável.
+# Base normativa: IN SGD/ME nº 94, de 2022, art. 11, III, "a" e "b".
+# Esquema: decisoes/2026-08-20-tco-estruturado.md. Leitura dos dados: etp/11-analise-comparativa-custos-tco.md.
+#
+# Regras de preenchimento:
+#   - TODA linha de custo tem campo `fonte`. Linha sem fonte rastreável não entra no
+#     comparativo (art. 11, III, "b" — memória de cálculo que permita verificar a origem).
+#   - Valor ainda não apurado é `null` com `pendencia` preenchida — nunca número
+#     estimado sem origem.
+#   - Custo de natureza qualitativa usa o campo `qualitativo`, não um valor inventado.
+#   - Soluções registradas como INVIÁVEIS não têm TCO calculado, por dispensa expressa
+#     do art. 11, §1º: vão para `sem_tco_por_inviabilidade`. Ver etp/10-registro-solucoes-inviaveis.md.
+
+parametros:
+  horizonte_meses: null
+  quantitativo: null
+  data_base: "<AAAA-MM-DD>"
+  moeda: BRL
+  # Se houver preço em moeda estrangeira, declarar taxa, tipo, fonte e data da cotação.
+  cambio: null
+
+# Componentes do ciclo de vida considerados (ajustar ao objeto).
+componentes_do_ciclo_de_vida:
+  - id: C1
+    nome: "Licenciamento / subscrição / fornecimento"
+  - id: C2
+    nome: "Implantação e configuração inicial"
+  - id: C3
+    nome: "Suporte técnico e garantia durante a vigência"
+  - id: C4
+    nome: "Infraestrutura necessária à solução"
+  - id: C5
+    nome: "Esforço incremental de operação"
+  - id: C6
+    nome: "Capacitação da equipe"
+  - id: C7
+    nome: "Migração e desmobilização da solução legada"
+
+solucoes: []
+  # - id: S1
+  #   nome: "<solução>"
+  #   viabilidade: viavel
+  #   custos:
+  #     - componente: C1
+  #       descricao: "<...>"
+  #       valor_unitario: null
+  #       unidade: "<...>"
+  #       quantidade: null
+  #       valor_horizonte: null
+  #       fonte: "<documento, endereço e data de consulta — ou [F-nn] de etp/fontes.yaml>"
+  #       pendencia: "<o que falta para apurar o valor>"
+  #     - componente: C5
+  #       qualitativo: "<avaliação qualitativa, sem valor inventado>"
+  #       fonte: "<...>"
+
+sem_tco_por_inviabilidade: []
+  # - id: S2
+  #   nome: "<solução>"
+  #   motivo: "<razão da inviabilidade — remissão a etp/10-registro-solucoes-inviaveis.md>"
+
+comparativo:
+  base: "<componentes somados e normalização adotada>"
+  linhas: []
+  leitura: ""
+
+pendencias: []

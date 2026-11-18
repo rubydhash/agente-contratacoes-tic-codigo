@@ -1,0 +1,55 @@
+# Build artifacts (gerados pelo scripts/build.sh)
+build/
+
+# Área de trabalho para artefatos baixados do PGC/Compras.gov e scratch
+# (minutas, downloads transitórios). Snapshots a preservar vão para referencia/.
+temp/
+
+# Ambiente Python local (fpdf2 e PyYAML para scripts/gerar-anexo-fontes.py) e caches
+.venv/
+__pycache__/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Lock-files temporários
+# Downloads em andamento (scripts/pesquisa-pncp.py)
+*.baixando
+~$*
+.~lock.*
+
+# A pasta .claude é mantida (configuração compartilhada do harness), exceto
+# os overrides locais de cada máquina.
+!.claude/
+.claude/settings.local.json
+.claude/.cc-writes/
+
+# Vazamento do ambiente de execução: o harness materializa .claude/ e .mcp.json em
+# TODA pasta que vira diretório de trabalho de um shell, inclusive dentro de
+# referencia/, que é imutável. Não são conteúdo do processo e não vão ao histórico.
+# Ver docs/fluxo-de-trabalho.md.
+referencia/**/.claude/
+referencia/**/.mcp.json
+referencia/.claude/
+referencia/.mcp.json
+
+# Arquivos-fantasma que o sandbox do harness monta na raiz do diretório de trabalho.
+# Não são conteúdo do repositório.
+/.bashrc
+/.bash_profile
+/.profile
+/.zshrc
+/.zprofile
+/.gitconfig
+/.gitmodules
+/.ripgreprc
+/.mcp.json
+/.idea
+/.vscode
+/.claude/*
+!/.claude/settings.json
+!/.claude/skills/

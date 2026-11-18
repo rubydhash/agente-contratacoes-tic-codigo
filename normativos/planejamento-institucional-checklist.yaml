@@ -1,0 +1,95 @@
+# Checklist do planejamento institucional do órgão, mapeado para o DFD/ETP/TR.
+#
+# A contratação DEVE se alinhar aos instrumentos de planejamento do órgão
+# (Lei 14.133, art. 18, §1º, II; IN SGD/ME 94/2022, arts. 6º e 7º): PDTI/PDTIC, PCA e
+# plano estratégico (PEI). Sem esse alinhamento explícito, a contratação é apontamento
+# certo dos órgãos de controle.
+#
+# Este arquivo nasce como ESQUELETO e é preenchido no onboarding
+# (skills/iniciar-contratacao, etapa 6). Os agentes consultam ESTE arquivo, e não o PDTI
+# inteiro (AGENTS.md, política de leitura).
+#
+# Fonte original:  referencia/normativos-orgao/<arquivo-do-pdti>.pdf
+# Fonte canônica:  referencia/normativos-md/pdti-<sigla>-<vigencia>.md (convertido por pdftotext)
+# Aprovado em:     <AAAA-MM — instância e ato de aprovação>
+
+versao: "<preencher: PDTI <sigla do órgão> AAAA-AAAA>"
+unidade_responsavel: "<preencher: unidade de TIC responsável pelo PDTI>"
+horizonte: []          # ex.: ["2025", "2026", "2027"]
+
+# ====================================================================
+# Documentos estratégicos referenciados pelo PDTI — usar nas fundamentações
+# para demonstrar o alinhamento de cima para baixo.
+# ====================================================================
+documentos_estrategicos:
+  - nome: "<preencher: Plano Estratégico Institucional do órgão, vigência>"
+    sigla: "PEI"
+    fonte_pdti: "<item e linhas do PDTI em normativos-md>"
+  - nome: "Estratégia Federal de Governo Digital"
+    sigla: "EFGD"
+    fonte_pdti: "<item e linhas do PDTI em normativos-md>"
+    relacionado: ["Decreto nº 12.198/2024", "Portaria SGD/MGI nº 6.618/2024"]
+
+# ====================================================================
+# Aderência da contratação aos temas/eixos do PDTI.
+# Repita o bloco para cada tema relevante; marque um como PRINCIPAL.
+# ====================================================================
+temas:
+  tema_principal:
+    titulo: "<preencher: número e nome do tema/eixo>"
+    fonte_pdti: "<item e linhas do PDTI em normativos-md>"
+    relevancia_para_contratacao: "PRINCIPAL"
+    objetivos: {}
+    #   O1:
+    #     descricao: "<objetivo do PDTI>"
+    #     kr_associado: "<resultado-chave/indicador>"
+    macroacoes_alinhadas: []
+
+# ====================================================================
+# Itens orçamentários do PDTI cabíveis para a contratação.
+# Se o objeto não estiver nominalmente previsto, registre a pendência abaixo e
+# abra um ADR em decisoes/ (enquadramento em item existente, suplementação
+# ou revisão do PDTI pelo comitê de governança digital).
+# ====================================================================
+orcamento:
+  total_anual: {}        # ex.: {"2026": 0.00, moeda: BRL}
+  itens_relevantes: []
+  #  - nome: "<item do PDTI>"
+  #    descricao_pdti: "<texto do PDTI>"
+  #    previsto: {"2026": 0.00}
+  #    observacao_critica: "<divergência entre objeto e item, se houver>"
+
+# ====================================================================
+# Mapeamento — onde cada elemento do planejamento deve aparecer no ETP/TR
+# ====================================================================
+aplicacao_no_etp_tr:
+  - secao: etp/02-descricao-necessidade.md
+    citar: ["<tema e objetivos do PDTI>"]
+    motivo: "Lei 14.133, art. 18, §1º, I: necessidade do ponto de vista do interesse público; o alinhamento ao PDTI a ancora."
+  - secao: etp/02-descricao-necessidade.md   # item 2.3
+    citar: ["<item do PCA vinculado ao tema do PDTI>"]
+    motivo: "Lei 14.133, art. 18, §1º, II, e IN 94, art. 7º: previsão no PCA, que reflete o PDTI."
+  - secao: etp/06-demais-requisitos.md
+    citar: ["<macroações que viram requisitos>", "LGPD (Lei 13.709/2018)"]
+    motivo: "IN 94, art. 16, I, c (requisitos legais)."
+  - secao: etp/13-estimativa-custo-total.md
+    citar: ["<orçamento previsto no PDTI para o item>"]
+    motivo: "Lei 14.133, art. 18, §1º, VI: adequação orçamentária."
+  - secao: etp/16-beneficios.md
+    citar: ["<resultados-chave do PDTI>"]
+    motivo: "Os benefícios do ETP refletem resultados institucionais já aprovados."
+  - secao: etp/21-declaracao-viabilidade.md
+    citar: ["Declarar consistência com o PDTI vigente"]
+    motivo: "Reforço final antes do encerramento do ETP."
+  - secao: tr/02-fundamentacao.md
+    citar: ["<tema do PDTI e item do orçamento>", "<PEI do órgão>"]
+    motivo: "IN 94, art. 15, I: alinhamento com instrumentos de planejamento."
+
+# ====================================================================
+# Pendências a confirmar com a área de TIC do órgão
+# ====================================================================
+pendencias_a_confirmar_com_area_tic:
+  - "Item exato do PCA que abriga esta contratação e o vínculo com o tema do PDTI."
+  - "Se o objeto está nominalmente previsto no orçamento do PDTI ou exige enquadramento/suplementação."
+  - "Política de Segurança da Informação (POSIN) vigente do órgão — citar no TR."
+  - "Quem é a autoridade máxima da área de TIC que assina o ETP/TR (IN 94, art. 11, §§2º e 3º)."

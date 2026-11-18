@@ -1,0 +1,318 @@
+# MANIFEST — índice e estado de todas as seções do DFD, do ETP e do TR.
+# Este é o PRIMEIRO arquivo a ser carregado por qualquer agente em uma sessão.
+# Carregar só o MANIFEST + a seção alvo + o checklist YAML correspondente
+# economiza ordens de magnitude em tokens versus carregar o documento inteiro.
+#
+# Status válidos: rascunho | revisao | aprovado
+# Convenção de commits: <area>(<slug-da-secao>): <mensagem curta>
+
+projeto:
+  objeto_curto: "<preencher em etp/00-metadados.yaml>"
+  objeto_fonte_canonica: "etp/00-metadados.yaml > contratacao.descricao_publica"
+  versao_repo: "1.0.0"
+  data_inicio: "<AAAA-MM-DD>"
+
+# Documento de Formalização da Demanda — fase de Levantamento de Demandas,
+# antecede ETP e TR. Conteúdo mínimo: Decreto nº 10.947/2022 art. 8º (I a VIII);
+# IN SGD/ME nº 94/2022 art. 10 §1º (a a h).
+sections_dfd:
+  - path: dfd/00-metadados.yaml
+    tipo: metadados
+    status: rascunho
+  - path: dfd/01-dfd.md
+    fonte: "Decreto 10.947/2022 art. 8º (I a VIII); IN 94/2022 art. 10 §1º (a a h); Lei 14.133/2021 art. 12 §1º"
+    status: rascunho
+
+# Estudo Técnico Preliminar — um arquivo por capítulo do ETP Digital do Compras.gov.br,
+# com número e nome do modelo de ETP de TIC da SGD (v1.2): 01 a 17 iguais ao modelo; 18
+# (parcelamento), 19 (impactos ambientais) e 20 (registro de fontes) acrescidos; 21 e 22
+# correspondem aos capítulos 18 a 20 do modelo. Itens internos prefixados pelo nº do
+# capítulo (3.1, 3.1.1…). Ver decisoes/2026-10-01-etp-capitulos-modelo-sgd.md.
+sections_etp:
+  - path: etp/00-metadados.yaml
+    tipo: metadados
+    status: rascunho
+  - path: etp/01-informacoes-basicas.md
+    capitulo: 1
+    capitulo_modelo_sgd: "1"
+    fonte: "—"
+    status: rascunho
+  - path: etp/02-descricao-necessidade.md
+    capitulo: 2
+    capitulo_modelo_sgd: "2"
+    fonte: "Lei 14.133 art. 18 §1º I e II; IN 94 art. 6º; art. 7º"
+    status: rascunho
+  - path: etp/03-area-requisitante.md
+    capitulo: 3
+    capitulo_modelo_sgd: "3"
+    fonte: "—"
+    status: rascunho
+  - path: etp/04-necessidades-negocio.md
+    capitulo: 4
+    capitulo_modelo_sgd: "4"
+    fonte: "Lei 14.133 art. 18 §1º III; IN 94 art. 11 I; art. 16 I"
+    status: rascunho
+  - path: etp/05-necessidades-tecnologicas.md
+    capitulo: 5
+    capitulo_modelo_sgd: "5"
+    fonte: "Lei 14.133 art. 18 §1º III; IN 94 art. 11 I; art. 16 II"
+    status: rascunho
+  - path: etp/06-demais-requisitos.md
+    capitulo: 6
+    capitulo_modelo_sgd: "6"
+    fonte: "Lei 14.133 art. 18 §1º III; IN 94 art. 11 I; art. 16"
+    status: rascunho
+  - path: etp/07-estimativa-demanda.md
+    capitulo: 7
+    capitulo_modelo_sgd: "7"
+    fonte: "Lei 14.133 art. 18 §1º IV e XI; IN 94 art. 11 I"
+    status: rascunho
+  - path: etp/08-levantamento-solucoes.md
+    capitulo: 8
+    capitulo_modelo_sgd: "8"
+    fonte: "Lei 14.133 art. 18 §1º V; IN 94 art. 11 II (alíneas a, b, c, d, h)"
+    status: rascunho
+  - path: etp/09-analise-comparativa-solucoes.md
+    capitulo: 9
+    capitulo_modelo_sgd: "9"
+    fonte: "Lei 14.133 art. 18 §1º V; IN 94 art. 11 II (alíneas e, f, g, i, j); art. 9º §6º"
+    status: rascunho
+  - path: etp/10-registro-solucoes-inviaveis.md
+    capitulo: 10
+    capitulo_modelo_sgd: "10"
+    fonte: "Lei 14.133 art. 18 §1º V; IN 94 art. 11 §1º"
+    status: rascunho
+  - path: etp/11-analise-comparativa-custos-tco.md
+    capitulo: 11
+    capitulo_modelo_sgd: "11"
+    fonte: "IN 94 art. 11 III (alíneas a-b)"
+    status: rascunho
+  - path: etp/12-descricao-solucao.md
+    capitulo: 12
+    capitulo_modelo_sgd: "12"
+    fonte: "Lei 14.133 art. 18 §1º VII; IN 94 art. 14"
+    status: rascunho
+  - path: etp/13-estimativa-custo-total.md
+    capitulo: 13
+    capitulo_modelo_sgd: "13"
+    fonte: "Lei 14.133 art. 18 §1º VI; IN 94 art. 11 IV; art. 20; art. 40 §1º"
+    status: rascunho
+  - path: etp/14-justificativa-tecnica.md
+    capitulo: 14
+    capitulo_modelo_sgd: "14"
+    fonte: "Lei 14.133 art. 18 §1º V; art. 41 I; art. 43; IN 94 art. 11 V; art. 9º §6º; art. 40"
+    status: rascunho
+  - path: etp/15-justificativa-economica.md
+    capitulo: 15
+    capitulo_modelo_sgd: "15"
+    fonte: "Lei 14.133 art. 18 §1º V; IN 94 art. 11 V; art. 20 §3º; art. 27 parágrafo único"
+    status: rascunho
+  - path: etp/16-beneficios.md
+    capitulo: 16
+    capitulo_modelo_sgd: "16"
+    fonte: "Lei 14.133 art. 18 §1º IX; IN 94 art. 11 V"
+    status: rascunho
+  - path: etp/17-providencias.md
+    capitulo: 17
+    capitulo_modelo_sgd: "17"
+    fonte: "Lei 14.133 art. 18 §1º X"
+    status: rascunho
+  - path: etp/18-parcelamento.md
+    capitulo: 18
+    capitulo_modelo_sgd: ""
+    fonte: "Lei 14.133 art. 18 §1º VIII; art. 40 §§2º-3º; art. 47 §1º; IN 94 art. 12 §§2º-3º"
+    status: rascunho
+  - path: etp/19-impactos-ambientais.md
+    capitulo: 19
+    capitulo_modelo_sgd: ""
+    fonte: "Lei 14.133 art. 18 §1º XII; IN 94 art. 16 I g"
+    status: rascunho
+  - path: etp/20-registro-fontes.md
+    capitulo: 20
+    capitulo_modelo_sgd: ""
+    fonte: "Lei 14.133 art. 18 §1º IV (documentos que dão suporte ao estudo); IN 94 art. 11, II e III (comparação apoiada em elementos verificáveis)"
+    status: rascunho
+  - path: etp/21-declaracao-viabilidade.md
+    capitulo: 21
+    capitulo_modelo_sgd: "18"
+    fonte: "Lei 14.133 art. 18 §1º XIII; IN 94 art. 11 V"
+    status: rascunho
+  - path: etp/22-responsaveis.md
+    capitulo: 22
+    capitulo_modelo_sgd: "19 e 20"
+    fonte: "IN 94 art. 11 §§2º-3º"
+    status: rascunho
+  - path: etp/fontes.yaml
+    tipo: estruturado
+    descricao: "Lista das fontes F-nn citadas no ETP — fonte de dados do Anexo I"
+    status: rascunho
+  # Anexo I do ETP — Registro de fontes técnicas consultadas, A4 paisagem. GERADO de
+  # etp/fontes.yaml por scripts/gerar-anexo-fontes.py (etp/anexo-i-registro-de-fontes.pdf);
+  # juntado aos autos em separado, NÃO entra no build do ETP. Registrar aqui quando gerado.
+  - path: etp/tco.yaml
+    tipo: estruturado
+    fonte: "IN 94 art. 11 III (a-b)"
+    status: rascunho
+  - path: etp/riscos.yaml
+    tipo: estruturado
+    status: rascunho
+
+# Termo de Referência — a estrutura espelha 1:1 os 13 capítulos do Modelo AGU de TR
+# de Serviços de TIC, atualização abr/2026, com o texto-base literal do modelo.
+# Ver decisoes/2026-09-29-tr-modelo-agu-treze-capitulos.md e normativos/agu-mapeamento.yaml.
+sections_tr:
+  - path: tr/00-metadados.yaml
+    tipo: metadados
+    status: rascunho
+  - path: tr/01-condicoes-gerais.md
+    capitulo_agu: 1
+    fonte: "Lei 14.133 art. 6º XXIII a e arts. 105-114; IN 94 art. 12 I e II, art. 13"
+    status: rascunho
+  - path: tr/02-fundamentacao.md
+    capitulo_agu: 2
+    fonte: "Lei 14.133 art. 6º XXIII b e art. 18 §1º I e II; IN 94 art. 6º, art. 7º, art. 12 IV, art. 15"
+    status: rascunho
+  - path: tr/03-descricao-solucao.md
+    capitulo_agu: 3
+    fonte: "Lei 14.133 art. 6º XXIII c; IN 94 art. 12 III, art. 14"
+    status: rascunho
+  - path: tr/04-requisitos.md
+    capitulo_agu: 4
+    fonte: "Lei 14.133 art. 6º XXIII d e arts. 96-102; IN 94 art. 12 V, art. 16, Anexo I itens 1, 4 e 7"
+    status: rascunho
+  - path: tr/05-papeis-responsabilidades.md
+    capitulo_agu: 5
+    fonte: "Lei 14.133 art. 117; IN 94 art. 12 VI, art. 17"
+    status: rascunho
+  - path: tr/06-modelo-execucao.md
+    capitulo_agu: 6
+    fonte: "Lei 14.133 art. 6º XXIII e; IN 94 art. 12 VII, art. 18"
+    status: rascunho
+  - path: tr/07-modelo-gestao.md
+    capitulo_agu: 7
+    fonte: "Lei 14.133 art. 6º XXIII f e arts. 117-123; IN 94 art. 12 VII, art. 19, arts. 29-33"
+    status: rascunho
+  - path: tr/08-criterios-medicao-pagamento.md
+    capitulo_agu: 8
+    descricao: "Inclui reajuste e cessão de crédito"
+    fonte: "Lei 14.133 art. 6º XXIII g e arts. 140-146; IN 94 art. 12 VII, art. 19, art. 24"
+    status: rascunho
+  - path: tr/09-sancoes-glosa.md
+    capitulo_agu: 9
+    descricao: "Sanções administrativas e procedimentos para retenção ou glosa no pagamento — capítulo próprio no modelo AGU abr/2026"
+    fonte: "Lei 14.133 arts. 155-163; IN 94 art. 12 XII, art. 19, III"
+    status: rascunho
+  - path: tr/10-selecao-fornecedor-regime.md
+    capitulo_agu: 10
+    fonte: "Lei 14.133 art. 6º XXIII h e arts. 62-70; IN 94 art. 12 X e XI, art. 22, art. 23"
+    status: rascunho
+  - path: tr/11-estimativas-valor.md
+    capitulo_agu: 11
+    fonte: "Lei 14.133 art. 6º XXIII i; IN 94 art. 12 VIII, art. 20, art. 40; IN 65/2021"
+    status: rascunho
+  - path: tr/12-adequacao-orcamentaria.md
+    capitulo_agu: 12
+    fonte: "IN 94 art. 12 IX, art. 21"
+    status: rascunho
+  - path: tr/13-disposicoes-finais.md
+    capitulo_agu: 13
+    fonte: "IN 94 art. 12 §2º, art. 34"
+    status: rascunho
+  - path: tr/matriz-riscos.yaml
+    tipo: estruturado
+    descricao: "Somente os riscos que viram cláusula contratual (SLA, glosa, sanção); referencia os ids de etp/riscos.yaml"
+    status: rascunho
+  - path: despachos/justificativa-modelo-agu.html
+    tipo: artefato-proprio
+    descricao: "Despacho de Justificativa Complementar — inclusões, modificações e exclusões na utilização da minuta padrão da AGU. Artefato autônomo em HTML, para colagem direta no SEI; NÃO integra o TR nem o build"
+    fonte: "Formato de despacho do SEI — templates/sei/documento-base.html"
+    gerado_por: "scripts/gerar-despacho.py — o HTML é SAÍDA; editar o script, não o HTML"
+    status: rascunho
+
+listas_verificacao:
+  # Listas de verificação da AGU, preenchidas por processo; o docx é gerado por
+  # scripts/gerar-listas-verificacao.py (decisoes/2026-11-06-listas-verificacao-agu.md).
+  - path: listas-verificacao/tic.yaml
+    tipo: estruturado
+    descricao: "Lista de verificação da AGU — TIC (set/2024), em branco"
+  - path: listas-verificacao/adesao-arp.yaml
+    tipo: estruturado
+    descricao: "Lista de verificação da AGU — adesão a ARP (set/2024), em branco; usar só em adesão"
+
+normativos:
+  - path: normativos/in94-checklist.yaml
+    descricao: "Checklist da IN SGD/ME 94/2022 mapeado para seções"
+  - path: normativos/lei14133-checklist.yaml
+    descricao: "Checklist da Lei 14.133/2021 (ETP art. 18 §1º; TR art. 6º XXIII)"
+  - path: normativos/agu-mapeamento.yaml
+    descricao: "Mapeamento dos capítulos do Modelo AGU para nossas seções"
+  - path: normativos/planejamento-institucional-checklist.yaml
+    descricao: "Planejamento institucional do órgão (PDTI, PCA, PEI) — esqueleto preenchido no onboarding"
+
+referencia:
+  normativos_originais:
+    - "referencia/normativos/L14133.html"
+    - "referencia/normativos/Instrução Normativa SGD_ME nº 94....html"
+    - "referencia/normativos/INSTRUÇÃO NORMATIVA SEGES_ME Nº 65....html"
+    - "referencia/normativos/INSTRUÇÃO NORMATIVA SEGES_ME Nº 67....html"
+    - "referencia/normativos/Portaria SGD_MGI nº 9.511, de 28 de outubro de 2025 — DOU.html"
+    - "referencia/normativos/Instrução Normativa SGD_MGI nº 4, de 14 de janeiro de 2026 — DOU.html"
+    # Capturados em 2026-11-06 (hashes em referencia/normativos/SHA256SUMS);
+    # ver decisoes/2026-11-06-checklist-in94-anexos.md
+    - "referencia/normativos/Inmetro - Portaria nº 304, de 6 de novembro de 2023 (RAC bens de informática, consolidado) - capturado 2026-11-06.pdf"
+    - "referencia/normativos/Inmetro - Portaria nº 211, de 31 de março de 2026 (altera a Portaria 304-2023) - capturado 2026-11-06.pdf"
+    - "referencia/normativos/Inmetro - Portaria nº 170, de 10 de abril de 2012 (REVOGADA pela 304-2023) - capturado 2026-11-06.pdf"
+    - "referencia/normativos/Decreto nº 7.174, de 12 de maio de 2010 - Planalto - capturado 2026-11-06.html"
+    - "referencia/normativos/Decreto nº 11.462, de 31 de março de 2023 - Planalto - capturado 2026-11-06.html"   # SRP: remanejamento (art. 30), adesão (art. 31), limites (art. 32)
+    - "referencia/normativos/AGU - Parecer Referencial nº 00002-2026-CONJUR-CGU-CGU-AGU (adesão a ARP) - capturado 2026-11-06.pdf"   # limites (itens 50-52) e item de grupo (84-88)
+    - "referencia/normativos/TCU - Licitações e Contratos, Orientações e Jurisprudência, 5.9.4 Sistema de Registro de Preços - capturado 2026-11-06.html"
+    - "referencia/normativos/Orientação Normativa SLTI nº 1, de 20 de agosto de 2015 - Portal de Compras - capturado 2026-11-06.html"
+    - "referencia/normativos/SGD - Guia de Requisitos e Obrigações quanto a Privacidade e Segurança da Informação v3.2 (nov-2024, espelho TCE-PB) - capturado 2026-11-06.pdf"   # espelho não oficial
+    - "referencia/normativos/SGD - Guia do Framework PPSI 2.0 v1.2 (11-06-2026) - capturado 2026-11-06.pdf"
+    - "referencia/normativos/Decreto nº 12.198, de 24 de setembro de 2024 (EFGD 2024-2027) - Câmara dos Deputados - capturado 2026-11-06.html"   # IN 94, art. 6º, II
+    - "referencia/normativos/SGD - Portaria SGD-MGI nº 6.618, de 25 de setembro de 2024 (princípios e objetivos da EFGD) - capturado 2026-11-06.html"
+    - "referencia/normativos/SGD - Catálogos de Soluções de TIC com Condições Padronizadas - capturado 2026-11-06.html"   # IN 94, art. 9º, §6º
+  # PDTI, PEI e normas internas do órgão — incluídos no onboarding (skills/iniciar-contratacao).
+  normativos_orgao_originais: []    # referencia/normativos-orgao/<arquivo>.pdf
+  normativos_md_limpo:
+    - "referencia/normativos-md/lei-14133-2021.md"
+    - "referencia/normativos-md/in-94-2022-sgd.md"
+    - "referencia/normativos-md/in-65-2021-seges.md"
+    - "referencia/normativos-md/in-67-2021-seges.md"
+    - "referencia/normativos-md/portaria-9511-2025-sgd.md"   # PPSI (institui) — revoga Portaria SGD/MGI 852/2023
+    - "referencia/normativos-md/in-4-2026-sgd.md"            # PPSI — ciclo de implementação 2026 do framework
+    - "referencia/normativos-md/decreto-7174-2010.md"         # bens de informática: certificações (art. 3º) e preferência PPB (arts. 5º-8º)
+    - "referencia/normativos-md/decreto-11462-2023.md"        # regulamento do SRP (Lei 14.133): arts. 30 a 32
+    - "referencia/normativos-md/portaria-inmetro-304-2023.md" # RAC de bens de informática (Anexo A), com a alteração da 211/2026
+    - "referencia/normativos-md/guia-requisitos-sip-v3-2-2024.md"  # Guia de SIP da SGD (IN 94, Anexo I, item 7.3); espelho não oficial
+  modelos_agu_originais:
+    # VIGENTE. Difere do set/25 apenas pela desduplicação do item que admite atestado de
+    # capacidade técnica em nome da matriz ou da filial (normativos/agu-mapeamento.yaml).
+    - "referencia/modelos-agu/modelo-de-termo-de-referencia-servicos-tic-lei-no-14-133-abr-26.docx"
+    - "referencia/modelos-agu/modelo-de-termo-de-referencia-servicos-tic-lei-no-14-133-set-25.docx"
+    - "referencia/modelos-agu/modelo-de-termo-de-contrato-tic-servicos-lei-no-14-133-ago-25.docx"
+    - "referencia/modelos-agu/modelo-de-lista-de-verificacao-tic-lei-no-14-133-set-24.docx"
+    - "referencia/modelos-agu/modelo-de-lista-de-verificacao-adesao-a-ata-de-registro-de-precos-lei-no-14-133-set-24.docx"
+  templates_md:
+    - "templates/agu-tr-servicos-tic.md"
+    - "templates/agu-tr-servicos-tic-numerado.md"   # GERADO por scripts/conferir-modelo-agu.py --numerado
+    - "templates/agu-contrato-tic.md"
+    - "templates/agu-lista-verificacao-tic.md"
+    - "templates/agu-lista-verificacao-adesao-arp.md"
+    - "templates/govdigital-etp.md"
+  planilhas:
+    - "referencia/planilhas/01_modelo-planilha-tco-e-analise-comparativa-de-custos-tic-geral.xlsx"
+  # Documento-base (cabeçalho, estilos SEI) dos despachos e da lista de verificação no SEI.
+  documento_base_sei:
+    - "templates/sei/documento-base.html"
+
+# Anexos do Governo Digital ainda não baixados (URLs estão no histórico do
+# repositório). Quando obtidos, mover para referencia/templates-gov-digital/
+# e converter para templates/ via scripts/converter-docx.sh.
+pendencias_de_referencia:
+  - "9-mapa-de-gerenciamento-de-riscos-textual-v3.docx"
+  - "10-ordem-de-servico-fornecimento-de-bens.docx"
+  - "11-termo-de-ciencia.docx"
+  - "12-termo-de-compromisso-de-manutencao-do-sigilo.docx"
+  - "14-termo-de-recebimento-provisorio-servicos-tic.docx"
+  - "15-termo-de-recebimento-definitivo.docx"

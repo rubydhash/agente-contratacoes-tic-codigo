@@ -1,0 +1,168 @@
+# Checklist normativo — Lei nº 14.133/2021 (Nova Lei de Licitações e Contratos)
+# Foco: ETP (art. 18 §1º) e TR (art. 6º XXIII), aplicáveis a contratações de TIC
+# em complemento às exigências específicas da IN SGD/ME 94/2022.
+#
+# Fonte canônica: referencia/normativos-md/lei-14133-2021.md
+
+versao_lei: "Lei 14.133, de 1º de abril de 2021 (com regulamentações até 2025)"
+
+# =====================================================================
+# ETP — Lei 14.133, art. 18, §1º (incisos I a XIII)
+# =====================================================================
+etp:
+
+  descricao_necessidade:
+    secao: etp/02-descricao-necessidade.md   # itens 2.1 e 2.2
+    fonte: "Lei 14.133/2021, art. 18 §1º I"
+    exige:
+      - descricao_da_necessidade_observado_problema_a_resolver_a_partir_da_perspectiva_do_interesse_publico
+    perguntas:
+      - "A necessidade está descrita do ponto de vista do interesse público (não da solução)?"
+
+  previsao_pca:
+    secao: etp/02-descricao-necessidade.md   # item 2.3 — o modelo SGD não tem capítulo próprio para o PCA
+    fonte: "Lei 14.133/2021, art. 18 §1º II"
+    exige:
+      - demonstracao_da_previsao_no_pca
+      - alinhamento_com_planejamento_do_orgao
+      - alinhamento_com_pdti_vigente   # ver normativos/planejamento-institucional-checklist.yaml
+    relacionado:
+      - "Decreto 10.947/2022 (PCA)"
+      - "IN 94/2022 art. 7º"
+      - "PDTI vigente do órgão (normativos/planejamento-institucional-checklist.yaml)"
+
+  requisitos_da_contratacao:
+    secao: "etp/04-necessidades-negocio.md; etp/05-necessidades-tecnologicas.md; etp/06-demais-requisitos.md"
+    fonte: "Lei 14.133/2021, art. 18 §1º III"
+    exige:
+      - requisitos_da_contratacao
+
+  estimativa_quantidades:
+    secao: etp/07-estimativa-demanda.md
+    fonte: "Lei 14.133/2021, art. 18 §1º IV"
+    exige:
+      - estimativa_das_quantidades
+      - memoria_de_calculo
+      - documentos_que_lhe_dao_suporte
+
+  levantamento_mercado:
+    secao: "etp/08-levantamento-solucoes.md; etp/09-analise-comparativa-solucoes.md"
+    fonte: "Lei 14.133/2021, art. 18 §1º V"
+    exige:
+      - levantamento_de_mercado
+      - analise_de_alternativas_possiveis
+    relacionado: ["IN 94/2022 art. 11, II"]
+
+  estimativa_valor:
+    secao: etp/13-estimativa-custo-total.md
+    fonte: "Lei 14.133/2021, art. 18 §1º VI"
+    exige:
+      - estimativa_do_valor_da_contratacao
+      - memoria_de_calculo
+      - documentos_que_lhe_dao_suporte
+      - precos_unitarios
+    relacionado: ["IN SEGES/ME 65/2021"]
+
+  descricao_solucao:
+    secao: etp/12-descricao-solucao.md
+    fonte: "Lei 14.133/2021, art. 18 §1º VII"
+    exige:
+      - descricao_da_solucao_como_um_todo
+      - exigencias_para_a_contratada
+      - exigencias_para_a_contratante
+
+  parcelamento:
+    secao: etp/18-parcelamento.md
+    fonte: "Lei 14.133/2021, art. 18 §1º VIII; arts. 40 §§2º-3º; art. 47 §1º"
+    exige:
+      - justificativas_para_o_parcelamento_ou_para_a_solucao_em_lote_unico
+
+  resultados_pretendidos:
+    secao: etp/16-beneficios.md
+    fonte: "Lei 14.133/2021, art. 18 §1º IX"
+    exige:
+      - demonstrativo_dos_resultados_pretendidos
+      - economicidade
+      - melhor_aproveitamento_dos_recursos_humanos_materiais_ou_financeiros
+
+  providencias_previas:
+    secao: etp/17-providencias.md
+    fonte: "Lei 14.133/2021, art. 18 §1º X"
+    exige:
+      - providencias_a_serem_adotadas_pela_administracao_previamente_a_celebracao
+      - capacitacao_de_servidores_e_adaptacao_do_ambiente
+
+  contratacoes_correlatas:
+    secao: etp/07-estimativa-demanda.md   # item 7.4 — o modelo SGD não tem capítulo próprio
+    fonte: "Lei 14.133/2021, art. 18 §1º XI"
+    exige:
+      - contratacoes_correlatas
+      - contratacoes_interdependentes
+
+  impactos_ambientais:
+    secao: etp/19-impactos-ambientais.md
+    fonte: "Lei 14.133/2021, art. 18 §1º XII"
+    exige:
+      - descricao_de_possiveis_impactos_ambientais
+      - medidas_mitigadoras
+    relacionado: ["Guia Nacional de Contratações Sustentáveis (CGU/AGU)"]
+
+  posicionamento_conclusivo:
+    secao: etp/21-declaracao-viabilidade.md
+    fonte: "Lei 14.133/2021, art. 18 §1º XIII"
+    exige:
+      - posicionamento_conclusivo_sobre_a_adequacao_da_contratacao
+      - viabilidade_e_razoabilidade
+
+# =====================================================================
+# TR — Lei 14.133, art. 6º XXIII (alíneas a-i)
+# =====================================================================
+tr:
+
+  conteudo_minimo:
+    secao_geral: tr/
+    fonte: "Lei 14.133/2021, art. 6º XXIII"
+    alineas:
+      a:
+        descricao: "definição do objeto, incluídos sua natureza, os quantitativos, o prazo do contrato e, se for o caso, a possibilidade de sua prorrogação"
+        secao: tr/01-condicoes-gerais.md
+      b:
+        descricao: "fundamentação da contratação, que consistirá na referência aos estudos técnicos preliminares correspondentes ou, quando não for possível divulgar esses estudos, no extrato das partes que não contiverem informações sigilosas"
+        secao: tr/02-fundamentacao.md
+      c:
+        descricao: "descrição da solução como um todo, considerado todo o ciclo de vida do objeto"
+        secao: tr/03-descricao-solucao.md
+      d:
+        descricao: "requisitos da contratação"
+        secao: tr/04-requisitos.md
+      e:
+        descricao: "modelo de execução do objeto, que consistirá na definição de como o contrato deverá produzir os resultados pretendidos desde o seu início até o seu encerramento"
+        secao: tr/06-modelo-execucao.md
+      f:
+        descricao: "modelo de gestão do contrato, que descreverá como a execução do objeto será acompanhada e fiscalizada pelo órgão ou entidade"
+        secao: tr/07-modelo-gestao.md
+      g:
+        descricao: "critérios de medição e de pagamento"
+        secao: tr/08-criterios-medicao-pagamento.md
+      h:
+        descricao: "forma e critérios de seleção do fornecedor"
+        secao: tr/10-selecao-fornecedor-regime.md
+      i:
+        descricao: "estimativas do valor da contratação, acompanhadas dos preços unitários referenciais, das memórias de cálculo e dos documentos que lhe dão suporte"
+        secao: tr/11-estimativas-valor.md
+
+# =====================================================================
+# Prazos contratuais (arts. 105-114) — relevante para tr/01-condicoes-gerais.md
+# =====================================================================
+prazos_contratuais:
+  art_106:
+    duracao_inicial_max: "5 anos"
+    aplica_se_quando: "houver demonstração da vantajosidade econômica e financeira"
+  art_107:
+    prorrogacao_max_total: "10 anos"
+    aplica_se_quando: "demonstrada a vantajosidade da prorrogação"
+  art_109_servico_continuo:
+    duracao_max: "10 anos"
+  art_114_sistemas_estruturantes_tic:
+    duracao_max: "15 anos"
+    fonte_complementar: "IN 94/2022, art. 13 §2º"

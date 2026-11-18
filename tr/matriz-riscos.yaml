@@ -1,0 +1,18 @@
+# Matriz de riscos do TR — para o caderno de critérios de aceitação e SLA.
+# Diferente de etp/riscos.yaml: aqui são SOMENTE os riscos cobertos por
+# cláusula contratual (glosa, SLA, sanção). Reaproveita IDs do mapa do ETP
+# quando aplicável.
+
+riscos_contratuais:
+  - id: SLA-001
+    referencia_etp: "EXEC-001"
+    risco: "<ex. indisponibilidade da plataforma acima do limite>"
+    indicador: "<ex. % de tempo disponível no mês>"
+    nivel_minimo: "<ex. 99,9%>"
+    janela_apuracao: "<ex. mês civil>"
+    glosa:
+      formula: "<ex. desconto de 0,1% do valor mensal por décimo abaixo do NMS>"
+      teto_pct: "<ex. 30>"
+    sancao_recorrencia:
+      gatilho: "<ex. 3 meses consecutivos abaixo do NMS>"
+      consequencia: "<ex. multa de 5% e abertura de processo de rescisão>"

@@ -1,0 +1,82 @@
+# Metadados da contratação — comuns ao ETP e ao TR.
+# Mantido em YAML para baixo custo de tokens e leitura rápida pelos agentes.
+
+contratacao:
+  # A descrição do OBJETO deve ser genérica quanto ao produto: a indicação da solução
+  # é feita em etp/12-descricao-solucao.md e fundamentada em etp/14-justificativa-tecnica.md.
+  # Nomear o produto no objeto, que precede o estudo, daria margem à leitura de
+  # direcionamento.
+  objeto_curto: "<preencher: nome curto da solução, até 200 caracteres>"
+  descricao_publica: "<preencher: 1-2 linhas para uso em capa, OS, ofício>"
+
+orgao:
+  nome: "<preencher>"
+  sigla: "<preencher>"
+  uasg: "<preencher>"
+  # Esfera e poder do contratante: definem a adesão cabível a ata de registro de preços
+  # (Lei 14.133, art. 86, §§3º e 8º). Lidos por scripts/pesquisa-pncp.py iniciar.
+  esfera: "federal"          # federal | estadual | distrital | municipal
+  poder: "executivo"
+  area_requisitante: "<preencher>"
+  area_tic: "<preencher>"
+  area_administrativa: "<preencher>"
+
+processo:
+  numero_sei: "<preencher: 00000.000000/AAAA-NN>"
+  data_abertura: "<AAAA-MM-DD>"
+
+# Artefatos já registrados no Compras.gov.br para este mesmo processo. A fonte
+# canônica do CONTEÚDO é este repositório; os PDFs baixados do sistema ficam em
+# temp/ (leitura) ou, se preservados, em referencia/artefatos-em-elaboracao-externos/
+# (docs/fluxo-de-trabalho.md).
+artefatos_no_comprasgov:
+  dfd: "<nº/ano — preencher após o registro>"
+  etp: "<nº/ano — preencher após o registro>"
+  mapa_riscos: "<nº/ano — preencher após o registro>"
+  tr: "<nº/ano — preencher após o registro>"
+
+equipe_planejamento:
+  integrante_requisitante:
+    nome: "<preencher>"
+    matricula: "<preencher>"
+  integrante_tecnico:
+    nome: "<preencher>"
+    matricula: "<preencher>"
+  integrante_administrativo:
+    nome: "<preencher>"
+    matricula: "<preencher>"
+  autoridade_maxima_tic:
+    nome: "<preencher — assinará o ETP nos termos da IN 94, art. 11, §2º; se compuser a equipe, quem assina é a autoridade superior (§3º)>"
+
+planejamento_vinculo:
+  pdtic_vigente: "<preencher: PDTI do órgão, vigência e tema — ver normativos/planejamento-institucional-checklist.yaml>"
+  pdtic_fonte: "<preencher: referencia/normativos-md/pdti-<sigla>-<vigencia>.md (item)>"
+  pdtic_item_orcamentario: "<a confirmar com a área de TIC>"
+  pca_ano: "<AAAA>"
+  pca_item: "<a confirmar com a área de TIC: PCA AAAA, item nº NNN>"
+  pca_id_pncp: "<preencher>"
+  pca_data_publicacao_pncp: "<AAAA-MM-DD>"
+  identificador_futura_contratacao: "<preencher>"
+  pei_alinhamento: "<a confirmar: PEI do órgão, objetivo estratégico relevante>"
+
+# Contratações correlatas relevantes — detalhamento em etp/07-estimativa-demanda.md (item 7.4)
+correlatas: {}
+
+# Itens do objeto — ver etp/18-parcelamento.md. Os campos de produto/SKU/código de
+# catálogo são a ESPECIFICAÇÃO resultante de etp/12 e etp/14; só integram o TR.
+itens:
+  - numero: 1
+    descricao: "<preencher>"
+    catser: "<preencher>"
+    quantidade_maxima: null
+    quantidade_maxima_fundamento: "<etp/07-estimativa-demanda.md>"
+
+estimativas:
+  valor_estimado_total: "<R$ a preencher>"
+  vigencia_meses: "<ex. 60>"
+  servico_continuado: "<true|false>"
+  prorrogavel: "<true|false>"
+
+# Convenção de revisões — incrementa a cada PR aprovado em main.
+versao_documento: "0.1.0"
+data_ultima_alteracao: "2026-09-29"

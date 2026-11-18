@@ -1,0 +1,56 @@
+# Metadados específicos do TR (complementares aos de etp/00-metadados.yaml).
+# Carregar este arquivo APÓS o de ETP no build, para que valores aqui sobrescrevam
+# os do ETP onde houver divergência (ex.: valor estimado já refinado por pesquisa).
+
+tr:
+  modelo_base: "AGU/CGU — Modelo de Termo de Referência, Serviços de TIC (Lei 14.133/2021), atualização abr/2026"
+  modelo_base_arquivo: "referencia/modelos-agu/modelo-de-termo-de-referencia-servicos-tic-lei-no-14-133-abr-26.docx"
+  despacho_de_justificativa: "despachos/justificativa-modelo-agu.html"
+  numeracao: "Segue item a item a do Modelo AGU abr/2026. Itens do modelo que não se aplicam permanecem na posição original com a redação 'Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).' Trechos alterados saem em azul no documento final — ver docs/redacao-tr.md."
+
+  modalidade_licitacao: "<pregão eletrônico | diálogo competitivo | dispensa | inexigibilidade>"
+  criterio_julgamento: "<menor preço | maior desconto | técnica e preço | maior retorno econômico>"
+  regime_execucao: "<empreitada por preço unitário | global | integral | tarefa | fornecimento e prestação associado>"
+  lote: "<único | múltiplos — ver etp/18-parcelamento.md>"
+
+  catser_principal: "<código>"
+  catmat_secundarios: []
+  codigo_pmc_tic: "<código do Catálogo de Soluções de TIC, se houver>"
+
+  permite_consorcio: "<true|false>"
+  permite_cooperativa: "<true|false>"
+  permite_subcontratacao: "<true|false>"
+  amostra_objeto: "<true|false>"
+  vistoria: "<true|false>"
+  margem_de_preferencia: "<true|false>"
+
+  vigencia_meses: "<preencher>"
+  servico_continuado: "<true|false>"
+
+  quantitativo:
+    minimo: null
+    maximo: null
+    unidade: "<preencher>"
+
+  valores:
+    fonte: "<preencher — toda cifra precisa de origem (etp/tco.yaml, etp/13-estimativa-custo-total.md)>"
+
+  garantia_da_contratacao:
+    exigida: "<true|false>"
+    percentual: null
+
+  reajuste:
+    aplicavel: "<true|false>"
+    indice: "ICTI"   # Índice de Custos de TI, mantido pelo Ipea; obrigatório para serviços TIC com reajuste (IN 94, art. 24)
+    data_do_orcamento_estimado: "<AAAA-MM-DD>"
+
+  habilitacao:
+    capital_social_minimo_pct: "<ex. 5>"
+    atestados_capacidade_tecnica: []
+
+  recebimento:
+    provisorio_dias: null
+    definitivo_dias: null
+
+versao_documento: "0.1.0"
+data_ultima_alteracao: "2026-09-29"

@@ -1,0 +1,54 @@
+# Mapa de riscos — formato estruturado, baseado no Anexo 9 (Mapa de Gerenciamento
+# de Riscos Textual v3) do Governo Digital.
+#
+# Base normativa: IN SGD/ME nº 94, de 2022, art. 8º, §1º (o gerenciamento de riscos
+# deve ser realizado durante todas as fases do processo de contratação) e art. 38
+# (harmonia com a Política de Gestão de Riscos do órgão, nos termos da IN Conjunta
+# MP/CGU nº 1, de 2016, e conteúdo mínimo do Mapa de Gerenciamento de Riscos).
+#
+# Escala probabilidade/impacto: 1 (muito baixo) → 5 (muito alto).
+# Preencher uma entrada por risco identificado.
+#
+# DOIS NÍVEIS DE REGISTRO
+# Este arquivo é o registro INTERNO E COMPLETO da Equipe de Planejamento: inclui
+# riscos de instrução processual que não se publicam. O que vai ao Compras.gov.br é
+# o Mapa de Gerenciamento de Riscos lançado no sistema, artefato autônomo com
+# numeração própria (R-xx), que NÃO integra o ETP. Se for mantido espelho dele no
+# repositório (ex.: etp/riscos.md), registrá-lo no MANIFEST como artefato-proprio.
+# O campo `publicado` de cada risco faz a ponte entre os dois:
+#   publicado: R-13   → o risco consta do mapa lançado, sob aquele número
+#   publicado: false  → o risco não consta do mapa lançado
+# Onde o nível lançado divergir da avaliação interna, registrar o campo
+# `divergencia_mapa_publicado`; a avaliação interna não é reescrita.
+
+fase_planejamento:
+  - id: PLAN-001
+    publicado: false
+    descricao: "<ex. atraso na obtenção da reserva orçamentária>"
+    causas: ["<causa 1>", "<causa 2>"]
+    consequencias: ["<consequência 1>"]
+    probabilidade: 0
+    impacto: 0
+    acoes_preventivas:
+      - acao: "<ex. iniciar trâmite junto à área orçamentária com 60 dias de antecedência>"
+        responsavel: "<papel>"
+    acoes_contingencia:
+      - acao: "<ex. priorizar etapas que não dependem de empenho>"
+        responsavel: "<papel>"
+
+fase_selecao:
+  - id: SEL-001
+    descricao: "<ex. impugnação ao edital sobre exigência técnica>"
+    probabilidade: 0
+    impacto: 0
+    acoes_preventivas: []
+    acoes_contingencia: []
+
+fase_execucao_contratual:
+  - id: EXEC-001
+    descricao: "<ex. queda de SLA da contratada>"
+    probabilidade: 0
+    impacto: 0
+    acoes_preventivas: []
+    acoes_contingencia: []
+    glosa_aplicavel: "<true|false e referência ao item de SLA>"

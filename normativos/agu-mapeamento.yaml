@@ -1,0 +1,157 @@
+# Mapeamento entre as seções dos modelos AGU e os artigos da IN 94/2022 e da
+# Lei 14.133/2021. Use este arquivo para garantir que a estrutura final do TR siga a
+# apresentação esperada pela CGU/AGU.
+#
+# A estrutura de `tr/` espelha 1:1 os treze capítulos do modelo de TR —
+# ver decisoes/2026-09-29-tr-modelo-agu-treze-capitulos.md.
+#
+# Modelos:
+#   - referencia/modelos-agu/modelo-de-termo-de-referencia-servicos-tic-lei-no-14-133-abr-26.docx  (VIGENTE)
+#   - referencia/modelos-agu/modelo-de-termo-de-referencia-servicos-tic-lei-no-14-133-set-25.docx  (anterior)
+#   - referencia/modelos-agu/modelo-de-termo-de-contrato-tic-servicos-lei-no-14-133-ago-25.docx
+#   - referencia/modelos-agu/modelo-de-lista-de-verificacao-tic-lei-no-14-133-set-24.docx
+
+modelo_tr_agu:
+  origem: "AGU/CGU — Modelo de Termo de Referência – Serviços de TIC (Lei 14.133/2021), abr/2026"
+  arquivo: "referencia/modelos-agu/modelo-de-termo-de-referencia-servicos-tic-lei-no-14-133-abr-26.docx"
+  template_md: "templates/agu-tr-servicos-tic.md"
+  # Versão com a numeração do Word, gerada por scripts/conferir-modelo-agu.py --numerado.
+  # É a referência de numeração: a conversão do pandoc (template_md) perde os números.
+  template_numerado: "templates/agu-tr-servicos-tic-numerado.md"
+  conferencia: "scripts/conferir-modelo-agu.py"
+
+  # Diferença apurada em 15/09/2026 entre a atualização abr/2026 e a anterior (set/2025).
+  # O confronto das duas conversões tem 34 linhas de diff e uma única alteração material,
+  # EDITORIAL: o modelo set/25 trazia o MESMO texto duas vezes; o abr/26 removeu a
+  # duplicata e manteve a provisão como subitem. Ela continua vigente.
+  mudancas_desde_set_25:
+    - tipo: desduplicacao
+      item: "Os atestados de capacidade técnica poderão ser apresentados em nome da matriz ou da filial do fornecedor."
+      local: "capítulo 10 — Qualificação Técnica"
+      no_set_25: "aparecia duas vezes: como subitem e como item autônomo"
+      no_abr_26: "aparece uma vez, como subitem (10.36.3 na numeração do modelo)"
+      efeito: "renumeração de -1 nos itens subsequentes do capítulo; a provisão PERMANECE em vigor"
+    - tipo: exclusao
+      item_set_25: "subtítulo solto 'Qualificação Técnico' antes do item de comprovação de aptidão"
+      local: "mesmo capítulo"
+      efeito: "apenas editorial"
+
+  # Convenção de redação do TR (docs/redacao-tr.md).
+  convencao_de_redacao:
+    numeracao: |
+      A numeração do TR segue ITEM A ITEM a do modelo. Itens do modelo que não se aplicam
+      NÃO são apagados: permanecem na posição original com a redação
+      "N.N. Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos)."
+      Itens novos, sem correspondente no modelo, são numerados APÓS o último item do
+      capítulo, ou como SUBITENS do item do modelo a que se referem (depois dos subitens
+      do modelo), de modo a não deslocar nenhum item do modelo.
+    texto_base: |
+      Fora do azul, o texto reproduz o modelo LITERALMENTE — inclusive "o Contratado" /
+      "o Contratante", caixa, pontuação e as falhas de digitação do próprio modelo. A
+      conferência é automática: scripts/conferir-modelo-agu.py. Os arquivos de tr/ nascem
+      com o texto literal do modelo (463 itens) e a conferência sem erro.
+    destaque: |
+      Todo trecho incluído ou alterado em relação ao modelo sai em AZUL no documento final,
+      inclusive o preenchimento de campos em aberto e a escolha entre alternativas do modelo.
+      No markdown:  [trecho]{.azul}  para fragmento;  ::: azul ... :::  para item inteiro.
+      Tradução para o docx por scripts/azul.lua + scripts/estilos-docx.py; para o HTML,
+      por folha de estilo embutida em scripts/build.sh (alvo `tr-html`).
+    # Registrar aqui cada item novo acrescido, com a razão (ex.: bloco 'Requisitos
+    # Tecnológicos' como subitens do 4.1, porque o formulário do Compras.gov.br tem seção
+    # própria com essa denominação).
+    excecoes_de_numeracao: []
+
+  estrutura_capitulos:
+    - numero: 1
+      titulo: "CONDIÇÕES GERAIS DA CONTRATAÇÃO"
+      secao_repo: tr/01-condicoes-gerais.md
+      cobre: ["Lei 14.133 art. 6º XXIII a", "Lei 14.133 arts. 105-107", "IN 94 art. 12 I", "IN 94 art. 12 II", "IN 94 art. 13"]
+    - numero: 2
+      titulo: "FUNDAMENTAÇÃO E DESCRIÇÃO DA NECESSIDADE DA CONTRATAÇÃO"
+      secao_repo: tr/02-fundamentacao.md
+      cobre: ["Lei 14.133 art. 6º XXIII b", "Lei 14.133 art. 18 §1º I e II", "IN 94 art. 6º", "IN 94 art. 7º", "IN 94 art. 12 IV", "IN 94 art. 15"]
+    - numero: 3
+      titulo: "DESCRIÇÃO DA SOLUÇÃO COMO UM TODO CONSIDERADO O CICLO DE VIDA DO OBJETO"
+      secao_repo: tr/03-descricao-solucao.md
+      cobre: ["Lei 14.133 art. 6º XXIII c", "IN 94 art. 12 III", "IN 94 art. 14"]
+    - numero: 4
+      titulo: "REQUISITOS DA CONTRATAÇÃO"
+      secao_repo: tr/04-requisitos.md
+      cobre: ["Lei 14.133 art. 6º XXIII d", "Lei 14.133 arts. 96-102", "IN 94 art. 12 V", "IN 94 art. 16", "IN 94 Anexo I itens 1, 4 e 7"]
+    - numero: 5
+      titulo: "PAPÉIS E RESPONSABILIDADES"
+      secao_repo: tr/05-papeis-responsabilidades.md
+      cobre: ["Lei 14.133 art. 117", "IN 94 art. 12 VI", "IN 94 art. 17"]
+    - numero: 6
+      titulo: "MODELO DE EXECUÇÃO DO OBJETO"
+      secao_repo: tr/06-modelo-execucao.md
+      cobre: ["Lei 14.133 art. 6º XXIII e", "IN 94 art. 12 VII", "IN 94 art. 18"]
+    - numero: 7
+      titulo: "MODELO DE GESTÃO DO CONTRATO"
+      secao_repo: tr/07-modelo-gestao.md
+      cobre: ["Lei 14.133 art. 6º XXIII f", "Lei 14.133 arts. 117-123", "IN 94 art. 12 VII", "IN 94 art. 19", "IN 94 arts. 29-33"]
+    - numero: 8
+      titulo: "CRITÉRIOS DE MEDIÇÃO E PAGAMENTO"
+      secao_repo: tr/08-criterios-medicao-pagamento.md
+      cobre: ["Lei 14.133 art. 6º XXIII g", "Lei 14.133 arts. 140-146", "IN 94 art. 12 VII", "IN 94 art. 19", "IN 94 art. 24"]
+    - numero: 9
+      titulo: "SANÇÕES ADMINISTRATIVAS E PROCEDIMENTOS PARA RETENÇÃO OU GLOSA NO PAGAMENTO"
+      secao_repo: tr/09-sancoes-glosa.md
+      cobre: ["Lei 14.133 arts. 155-163", "IN 94 art. 12 XII", "IN 94 art. 19, III"]
+      nota: "Capítulo próprio no modelo abr/2026: o título usa o mesmo estilo numerado (Nivel01) dos demais capítulos. A conversão pelo pandoc perde essa numeração e dá a falsa impressão de subseção do capítulo 8."
+    - numero: 10
+      titulo: "FORMA E CRITÉRIOS DE SELEÇÃO DO FORNECEDOR E REGIME DE EXECUÇÃO"
+      secao_repo: tr/10-selecao-fornecedor-regime.md
+      cobre: ["Lei 14.133 art. 6º XXIII h", "Lei 14.133 arts. 62-70", "IN 94 art. 12 X e XI", "IN 94 art. 22", "IN 94 art. 23"]
+    - numero: 11
+      titulo: "ESTIMATIVAS DO VALOR DA CONTRATAÇÃO"
+      secao_repo: tr/11-estimativas-valor.md
+      cobre: ["Lei 14.133 art. 6º XXIII i", "IN 94 art. 12 VIII", "IN 94 art. 20", "IN 94 art. 40", "IN 65/2021"]
+    - numero: 12
+      titulo: "ADEQUAÇÃO ORÇAMENTÁRIA"
+      secao_repo: tr/12-adequacao-orcamentaria.md
+      cobre: ["IN 94 art. 12 IX", "IN 94 art. 21"]
+    - numero: 13
+      titulo: "DISPOSIÇÕES FINAIS"
+      secao_repo: tr/13-disposicoes-finais.md
+      cobre: ["IN 94 art. 12 §2º", "IN 94 art. 34"]
+      nota: "Pode abrigar também o Cronograma Físico-Financeiro e o bloco de assinaturas, como itens novos ao final do capítulo."
+
+# Despacho que registra e fundamenta cada afastamento do modelo padrão.
+# Formato de despacho do SEI; cabeçalho e estilos em templates/sei/documento-base.html.
+despacho_de_justificativa:
+  arquivo: despachos/justificativa-modelo-agu.html
+  gerado_por: scripts/gerar-despacho.py
+  formato: html
+  motivo_do_formato: "Colagem direta no editor do SEI, preservando a formatação"
+  documento_base: "templates/sei/documento-base.html"
+  regra: |
+    Todo item do modelo AGU excluído, alterado ou incluído no TR precisa ter
+    entrada na tabela do despacho, e toda entrada da tabela precisa corresponder a um
+    afastamento efetivo. A conferência é bidirecional.
+
+# Modelo de Lista de Verificação AGU (set/2024) — usar como auto-checklist final
+# antes do envio à Análise Jurídica.
+modelo_lista_verificacao_agu:
+  origem: "AGU/CGU — Modelo de Lista de Verificação TIC, set/2024"
+  uso: "Aplicar o conteúdo de templates/agu-lista-verificacao-tic.md como checagem final"
+  copia_no_repo: templates/agu-lista-verificacao-tic.md
+  # Preencher em listas-verificacao/tic.yaml; docx por scripts/gerar-listas-verificacao.py
+  # (decisoes/2026-11-06-listas-verificacao-agu.md).
+  preenchida: listas-verificacao/tic.yaml
+
+# Modelo de Lista de Verificação AGU para adesão a ata de registro de preços (set/2024).
+# Usar quando o processo aderir a ata de outro órgão, junto com a lista de TIC.
+modelo_lista_verificacao_adesao_agu:
+  origem: "AGU/CGU — Modelo de Lista de Verificação, Adesão à ata de registro de preços (Lei 14.133), set/2024"
+  arquivo: "referencia/modelos-agu/modelo-de-lista-de-verificacao-adesao-a-ata-de-registro-de-precos-lei-no-14-133-set-24.docx"
+  copia_no_repo: templates/agu-lista-verificacao-adesao-arp.md
+  preenchida: listas-verificacao/adesao-arp.yaml
+  # Nota 8 do modelo: a IN SEGES/ME 81/2022, art. 11, dispensa o TR na adesão. Para TIC prevalece a
+  # IN SGD/ME 94/2022, art. 9º, §1º, IV: o TR é obrigatório também na adesão.
+
+# Modelo de Termo de Contrato (ago/2025) — referência para a etapa pós-licitação,
+# fora do escopo do ETP/TR, mas armazenado para apoiar revisão do modelo de execução.
+modelo_termo_contrato_agu:
+  origem: "AGU/CGU — Modelo de Termo de Contrato Serviços TIC, ago/2025"
+  copia_no_repo: templates/agu-contrato-tic.md
