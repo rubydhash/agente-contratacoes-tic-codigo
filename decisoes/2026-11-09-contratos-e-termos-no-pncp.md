@@ -1,6 +1,6 @@
 ---
 data: 2026-11-09
-autores: ["Neuton Martins da Costa"]
+autores: ["Neuton Martins"]
 status: aceita  # aceita | aberta | rejeitada
 ---
 

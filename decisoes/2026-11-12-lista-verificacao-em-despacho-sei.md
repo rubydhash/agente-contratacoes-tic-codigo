@@ -1,7 +1,7 @@
 ---
 data: 2026-11-12
 status: aceita
-autor: "Neuton Martins da Costa"
+autor: "Neuton Martins"
 ---
 
 # Lista de verificação da AGU também como documento do SEI
