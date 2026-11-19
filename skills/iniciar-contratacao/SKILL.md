@@ -34,18 +34,13 @@ Apresente as etapas abaixo em uma linha cada e pergunte por onde começar. **Par
 ## 1. Dependências
 
 ```bash
-for c in git pandoc pdftotext pdftoppm python3; do command -v $c >/dev/null && echo "ok  $c" || echo "FALTA $c"; done
-python3 -c "import yaml" && echo "ok  pyyaml" || echo "FALTA python3-yaml"
-python3 -c "import lxml" && echo "ok  lxml"   || echo "FALTA python3-lxml"
-[ -x .venv/bin/python ] && .venv/bin/python -c "import fpdf, yaml" && echo "ok  .venv (fpdf2)" || echo "FALTA .venv com fpdf2"
-fc-list | grep -qi dejavu && echo "ok  DejaVu" || echo "FALTA fonts-dejavu-core"
+command -v git >/dev/null && echo "ok    git" || echo "FALTA git"
+python3 scripts/_ambiente.py      # .venv, pacotes de requirements.txt, pandoc e fonte DejaVu
 ```
 
-Para o que faltar, mostre o comando de instalação (`docs/primeiros-passos.md`) e diga o que deixa
-de funcionar sem a dependência:
-- sem `pandoc`, não há build;
-- sem `lxml`, não há conferência do TR;
-- sem `fpdf2`, não há Anexo I.
+Se faltar o `.venv`, proponha `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`
+(precisa de rede para o PyPI). O diagnóstico diz o que deixa de funcionar sem cada item; os
+comandos de instalação estão em `docs/primeiros-passos.md`.
 
 **Parada.**
 
@@ -103,7 +98,7 @@ também `MANIFEST.yaml > projeto.objeto_curto`. **Parada.**
    a pasta) e converta:
 
    ```bash
-   pdftotext -layout referencia/normativos-orgao/<arquivo>.pdf referencia/normativos-md/pdti-<sigla>-<vigencia>.md
+   python3 scripts/ler-pdf.py texto referencia/normativos-orgao/<arquivo>.pdf -o referencia/normativos-md/pdti-<sigla>-<vigencia>.md
    ```
 
    Se a conversão voltar vazia, o PDF é imagem: siga `docs/redacao-etp.md` (PDF sem texto).

@@ -64,9 +64,16 @@ antes de qualquer redação.
   - nenhum campo removido.
 - **ETP:** numeração prefixada pelo capítulo (`3.1`, `3.1.1`). Cite fontes externas como
   `[F-nn]`, registradas em `etp/fontes.yaml`. Veja `docs/redacao-etp.md`.
-- **TR:** fora do azul, o texto é o do modelo AGU literal. Item que não se aplica vira
-  "Suprimido", nunca é apagado. Todo afastamento sai em azul e ganha linha em
-  `scripts/gerar-despacho.py`. Depois de editar, rode `python3 scripts/conferir-modelo-agu.py`.
+- **TR:** o texto sem cor (normal ou tachado) é o do modelo AGU literal. Afastamentos seguem o
+  código de formatação visual do IPP AGU/MGI de TIC:
+  - inclusão `{.inclusao}` em vermelho;
+  - ajuste `~~original~~ [novo]{.ajuste}` em verde;
+  - preenchimento `{.preenchimento}` em azul;
+  - supressão `~~tachada~~`, nunca apagada.
+
+  Inclusão, ajuste e supressão levam `::: justificativa` (cinza) logo abaixo do item. O despacho
+  sai dali, por `scripts/gerar-despacho.py`. Depois de editar, rode
+  `python3 scripts/conferir-modelo-agu.py`.
   Veja `docs/redacao-tr.md`.
 - **Dados vão para YAML** (`tco`, `fontes`, `riscos`). Valor não apurado é `null` com `pendencia`.
   Veja `docs/dados-estruturados.md`.
@@ -115,7 +122,7 @@ estimativa sua.
 |---|---|
 | Sessão, edições manuais, commits, `temp/` | `docs/fluxo-de-trabalho.md` |
 | DFD, ETP, fontes, Anexo I, PDF sem texto, matriz de fabricante | `docs/redacao-etp.md` |
-| TR, azul, despacho, conferência | `docs/redacao-tr.md` |
+| TR, código de cores do IPP, despacho, conferência | `docs/redacao-tr.md` |
 | YAML, estados de cobertura | `docs/dados-estruturados.md` |
 | Scripts | `docs/ferramentas.md` |
 | PNCP | `docs/pesquisa-pncp.md` |

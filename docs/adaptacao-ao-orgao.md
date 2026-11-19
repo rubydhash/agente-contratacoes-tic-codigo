@@ -24,7 +24,7 @@ art. 86, §§3º e 8º) e é lida pela pesquisa no PNCP.
 2. Converta para consulta por grep:
 
    ```bash
-   pdftotext -layout referencia/normativos-orgao/<pdti>.pdf referencia/normativos-md/pdti-<sigla>-<vigencia>.md
+   python3 scripts/ler-pdf.py texto referencia/normativos-orgao/<pdti>.pdf -o referencia/normativos-md/pdti-<sigla>-<vigencia>.md
    ```
 
 3. Preencha `normativos/planejamento-institucional-checklist.yaml`:

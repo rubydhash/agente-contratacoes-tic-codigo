@@ -9,12 +9,17 @@ Fonte dos dados: etp/fontes.yaml (não edite o PDF; edite o YAML e regenere).
 Saída:           etp/anexo-i-registro-de-fontes.pdf
 
 Uso:
-  .venv/bin/python scripts/gerar-anexo-fontes.py
+  python3 scripts/gerar-anexo-fontes.py   # roda no .venv, se houver (scripts/_ambiente.py)
 
-Requer fpdf2 e PyYAML. Instalação, uma única vez, fora do Python do sistema:
-  python3 -m venv .venv && .venv/bin/pip install fpdf2 pyyaml
+Requer fpdf2 e PyYAML, do .venv (python3 -m venv .venv && .venv/bin/pip install -r requirements.txt),
+e a fonte DejaVu (scripts/_ambiente.py: fonte_ttf).
 """
 import os, re, sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _ambiente  # noqa: E402
+_ambiente.usar_venv(__file__)   # bibliotecas do .venv (requirements.txt)
+
 
 import yaml
 from fpdf import FPDF
@@ -25,7 +30,6 @@ DADOS = os.path.join(RAIZ, "etp/fontes.yaml")
 META = os.path.join(RAIZ, "etp/00-metadados.yaml")
 SAIDA = os.path.join(RAIZ, "etp/anexo-i-registro-de-fontes.pdf")
 
-FONTES_TTF = "/usr/share/fonts/truetype/dejavu"
 TITULO = "ANEXO I DO ESTUDO TÉCNICO PRELIMINAR"
 SUBTITULO = "Registro de fontes técnicas consultadas"
 
@@ -58,10 +62,11 @@ class Anexo(FPDF):
         self.set_margins(15, 15, 15)
         self.set_auto_page_break(True, margin=15)
         # Não há DejaVu itálica no ambiente: o itálico do markdown sai em redondo.
-        self.add_font("DejaVu", "", f"{FONTES_TTF}/DejaVuSans.ttf")
-        self.add_font("DejaVu", "B", f"{FONTES_TTF}/DejaVuSans-Bold.ttf")
-        self.add_font("DejaVu", "I", f"{FONTES_TTF}/DejaVuSans.ttf")
-        self.add_font("DejaVu", "BI", f"{FONTES_TTF}/DejaVuSans-Bold.ttf")
+        normal, negrito = _ambiente.fonte_ttf("DejaVuSans.ttf"), _ambiente.fonte_ttf("DejaVuSans-Bold.ttf")
+        self.add_font("DejaVu", "", normal)
+        self.add_font("DejaVu", "B", negrito)
+        self.add_font("DejaVu", "I", normal)
+        self.add_font("DejaVu", "BI", negrito)
 
     def header(self):
         self.set_font("DejaVu", "B", 11)

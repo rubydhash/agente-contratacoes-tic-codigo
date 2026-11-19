@@ -26,9 +26,11 @@ requisitante, técnico e administrativo, que querem:
 #    no GitHub) e clone-o.
 git clone <url-do-seu-repositorio> && cd <pasta>
 
-# 2. Instale as dependências (Debian/Ubuntu)
-sudo apt-get install -y pandoc poppler-utils python3-yaml python3-lxml fonts-dejavu-core
-python3 -m venv .venv && .venv/bin/pip install fpdf2 pyyaml
+# 2. Instale as dependências: tudo no .venv do repositório (inclusive o pandoc), menos a fonte
+#    dos PDFs. Debian/Ubuntu:
+sudo apt-get install -y python3-venv fonts-dejavu-core
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+python3 scripts/_ambiente.py   # confere o ambiente
 
 # 3. Abra seu agente de IA na pasta e peça o onboarding
 #    (Claude Code: /iniciar-contratacao; outros agentes: "siga skills/iniciar-contratacao/SKILL.md")

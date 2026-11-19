@@ -14,6 +14,11 @@ Requer só PyYAML (Python do sistema).
 """
 import os, re, sys, zipfile, shutil, tempfile
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _ambiente  # noqa: E402
+_ambiente.usar_venv(__file__)   # bibliotecas do .venv (requirements.txt)
+
+
 import yaml
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

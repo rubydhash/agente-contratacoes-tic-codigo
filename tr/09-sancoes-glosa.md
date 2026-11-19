@@ -5,21 +5,22 @@ fonte_in_94: "art. 12 XII; art. 19 III"
 capitulo_modelo_agu: 9
 status: rascunho           # rascunho | revisao | aprovado
 autor: ""
-ultima_alteracao: 2026-09-29
+ultima_alteracao: 2026-11-19
 pendencias: []
 ---
 # 9. Sanções Administrativas e Procedimentos para retenção ou glosa no pagamento
 
 <!-- Texto-base: Modelo AGU de TR de Serviços de TIC, abr/2026, reproduzido literalmente
-com a numeração do Word. Regras de redação em docs/redacao-tr.md: fora do azul, o texto é o do
-modelo; item que não se aplica fica na posição como
-"N.N. [Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).]{.azul}";
-todo afastamento sai em azul e ganha linha em scripts/gerar-despacho.py.
+com a numeração do Word. Afastamentos no código de cores do IPP AGU/MGI de TIC (regras em
+docs/redacao-tr.md): inclusão [em vermelho]{.inclusao}; ajuste ~~texto original~~ [em verde]{.ajuste};
+preenchimento de lacuna [em azul]{.preenchimento}; supressão ~~tachada~~, sem apagar o texto do
+modelo. Inclusão, ajuste e supressão levam bloco "::: justificativa" logo abaixo do item: é dali
+que scripts/gerar-despacho.py monta o despacho.
 Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 9.1. Nos casos de inadimplemento na execução do objeto, as ocorrências serão registradas pela contratante, conforme a tabela abaixo:
 
-<!-- TABELA DO MODELO no item 9.1: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: azul … ::: -->
+<!-- TABELA DO MODELO no item 9.1: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: preenchimento … ::: (linhas acrescidas: ::: inclusao) -->
 
 9.2. Nos termos do art. 19, inciso III da Instrução Normativa SGD/ME nº 94, de 2022, será efetuada a retenção ou glosa no pagamento, proporcional à irregularidade verificada, sem prejuízo das sanções cabíveis, nos casos em que p contratado:
 

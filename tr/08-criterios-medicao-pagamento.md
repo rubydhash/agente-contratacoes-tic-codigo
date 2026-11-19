@@ -5,21 +5,22 @@ fonte_in_94: "art. 12 VII; art. 19; art. 24"
 capitulo_modelo_agu: 8
 status: rascunho           # rascunho | revisao | aprovado
 autor: ""
-ultima_alteracao: 2026-09-29
+ultima_alteracao: 2026-11-19
 pendencias: []
 ---
 # 8. CRITÉRIOS DE MEDIÇÃO E PAGAMENTO
 
 <!-- Texto-base: Modelo AGU de TR de Serviços de TIC, abr/2026, reproduzido literalmente
-com a numeração do Word. Regras de redação em docs/redacao-tr.md: fora do azul, o texto é o do
-modelo; item que não se aplica fica na posição como
-"N.N. [Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).]{.azul}";
-todo afastamento sai em azul e ganha linha em scripts/gerar-despacho.py.
+com a numeração do Word. Afastamentos no código de cores do IPP AGU/MGI de TIC (regras em
+docs/redacao-tr.md): inclusão [em vermelho]{.inclusao}; ajuste ~~texto original~~ [em verde]{.ajuste};
+preenchimento de lacuna [em azul]{.preenchimento}; supressão ~~tachada~~, sem apagar o texto do
+modelo. Inclusão, ajuste e supressão levam bloco "::: justificativa" logo abaixo do item: é dali
+que scripts/gerar-despacho.py monta o despacho.
 Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 8.1. A avaliação da execução do objeto utilizará o [Instrumento de Medição de Resultado (IMR), conforme previsto no [Anexo XXX] OU [outro instrumento substituto para aferição da qualidade da prestação dos serviços] OU [o disposto nesta seção].
 
-<!-- TABELA DO MODELO no item 8.1: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: azul … ::: -->
+<!-- TABELA DO MODELO no item 8.1: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: preenchimento … ::: (linhas acrescidas: ::: inclusao) -->
 
 8.2. Será indicada a retenção ou glosa no pagamento, proporcional à irregularidade verificada, sem prejuízo das sanções cabíveis, caso se constate que o Contratado:
 

@@ -40,22 +40,28 @@ modelo_tr_agu:
   convencao_de_redacao:
     numeracao: |
       A numeração do TR segue ITEM A ITEM a do modelo. Itens do modelo que não se aplicam
-      NÃO são apagados: permanecem na posição original com a redação
-      "N.N. Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos)."
+      NÃO são apagados: permanecem na posição original, com o texto do modelo TACHADO
+      ("N.N. ~~texto do modelo~~"), seguido da justificativa em cinza.
       Itens novos, sem correspondente no modelo, são numerados APÓS o último item do
       capítulo, ou como SUBITENS do item do modelo a que se referem (depois dos subitens
       do modelo), de modo a não deslocar nenhum item do modelo.
     texto_base: |
-      Fora do azul, o texto reproduz o modelo LITERALMENTE — inclusive "o Contratado" /
+      Fora das cores, o texto (normal ou tachado) reproduz o modelo LITERALMENTE — inclusive "o Contratado" /
       "o Contratante", caixa, pontuação e as falhas de digitação do próprio modelo. A
       conferência é automática: scripts/conferir-modelo-agu.py. Os arquivos de tr/ nascem
       com o texto literal do modelo (463 itens) e a conferência sem erro.
     destaque: |
-      Todo trecho incluído ou alterado em relação ao modelo sai em AZUL no documento final,
-      inclusive o preenchimento de campos em aberto e a escolha entre alternativas do modelo.
-      No markdown:  [trecho]{.azul}  para fragmento;  ::: azul ... :::  para item inteiro.
-      Tradução para o docx por scripts/azul.lua + scripts/estilos-docx.py; para o HTML,
-      por folha de estilo embutida em scripts/build.sh (alvo `tr-html`).
+      Código de formatação visual sugerida do Instrumento de Padronização AGU/MGI de TIC
+      (seção "Como elaborar o Termo de Referência?", p. 88 do PDF; Declaração, p. 136):
+        inclusão        fonte VERMELHA   [trecho]{.inclusao}  /  ::: inclusao ... :::
+        ajuste          fonte VERDE      ~~texto do modelo~~ [texto novo]{.ajuste}
+        preenchimento   fonte AZUL       [valor]{.preenchimento}  /  ::: preenchimento ... :::
+        supressão       TACHADO          ~~texto do modelo~~  (também a alternativa OU não adotada)
+        justificativa   fonte CINZA      ::: justificativa ... :::  logo abaixo do item
+      Inclusão, ajuste e supressão exigem justificativa; o despacho
+      (scripts/gerar-despacho.py) é montado a partir dessas justificativas.
+      Tradução para o docx e o HTML por scripts/marcas.lua + scripts/estilos-docx.py; cores
+      e legenda em scripts/tr_marcas.py. A marca antiga {.azul} ainda é lida, com aviso.
     # Registrar aqui cada item novo acrescido, com a razão (ex.: bloco 'Requisitos
     # Tecnológicos' como subitens do 4.1, porque o formulário do Compras.gov.br tem seção
     # própria com essa denominação).

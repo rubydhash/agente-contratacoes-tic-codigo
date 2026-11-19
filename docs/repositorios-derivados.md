@@ -30,6 +30,15 @@ genéricos.
 
 Contribuições ao template público seguem o [CONTRIBUTING.md](../CONTRIBUTING.md).
 
+## Ao receber o código de cores do IPP
+
+Repositório derivado criado antes do código de formatação visual do IPP (marca `{.azul}` e
+"Suprimido") deve trazer juntos `scripts/tr_marcas.py`, `scripts/marcas.lua`,
+`scripts/estilos-docx.py`, `scripts/build.sh`, `scripts/conferir-modelo-agu.py` e a lógica
+de `scripts/gerar-despacho.py`. Depois, apague `scripts/azul.lua`. As marcas antigas continuam
+funcionando, com aviso da conferência. Migre-as item a item, como em
+[Redação do TR](redacao-tr.md#migrar-da-marca-azul).
+
 ## Configuração útil no repositório derivado
 
 Se o agente roda em sandbox com escrita restrita, acrescente o caminho local do template às

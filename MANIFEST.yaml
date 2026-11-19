@@ -226,7 +226,7 @@ sections_tr:
     tipo: artefato-proprio
     descricao: "Despacho de Justificativa Complementar — inclusões, modificações e exclusões na utilização da minuta padrão da AGU. Artefato autônomo em HTML, para colagem direta no SEI; NÃO integra o TR nem o build"
     fonte: "Formato de despacho do SEI — templates/sei/documento-base.html"
-    gerado_por: "scripts/gerar-despacho.py — o HTML é SAÍDA; editar o script, não o HTML"
+    gerado_por: "scripts/gerar-despacho.py, a partir dos blocos ::: justificativa do TR — o HTML é SAÍDA; editar o TR ou o script, não o HTML"
     status: rascunho
 
 listas_verificacao:

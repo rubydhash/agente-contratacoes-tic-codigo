@@ -38,15 +38,16 @@ while IFS= read -r f; do
 done < <(grep -lE "^status:[[:space:]]*aprovado" dfd/*.md etp/*.md tr/*.md 2>/dev/null || true)
 
 # 3) Parse dos YAMLs (parser leve via python -c se disponível, senão pula)
-if command -v python3 >/dev/null 2>&1 && python3 -c "import yaml" >/dev/null 2>&1; then
+source scripts/_ambiente.sh   # PY: o Python do .venv, se houver
+if command -v "$PY" >/dev/null 2>&1 && "$PY" -c "import yaml" >/dev/null 2>&1; then
   for y in MANIFEST.yaml normativos/*.yaml dfd/*.yaml etp/*.yaml tr/*.yaml listas-verificacao/*.yaml; do
     [[ -e "$y" ]] || continue
-    python3 -c "import sys, yaml; yaml.safe_load(open(sys.argv[1]))" "$y" \
+    "$PY" -c "import sys, yaml; yaml.safe_load(open(sys.argv[1]))" "$y" \
       && log_ok "YAML válido: $y" \
       || log_err "YAML inválido: $y"
   done
 else
-  log_warn "python3+pyyaml não disponível — pulando parse YAML."
+  log_warn "PyYAML não disponível (crie o .venv: requirements.txt) — pulando parse YAML."
 fi
 
 # 4) Referências obrigatórias presentes (templates AGU + checklists + normativos institucionais)

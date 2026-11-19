@@ -13,22 +13,40 @@ Melhorias de ferramental feitas no repositório do processo podem voltar para o 
 
 ## 2. Instale as dependências
 
-| Ferramenta | Para quê | Instalação (Debian/Ubuntu) |
+Fora do Python, o sistema só precisa de três coisas:
+
+| Do sistema | Para quê | Debian/Ubuntu |
 |---|---|---|
 | `git` | Versionamento | `apt-get install git` |
-| `pandoc` | Build docx/HTML, conversão de modelos | `apt-get install pandoc` |
-| `poppler-utils` | `pdftotext`/`pdftoppm`: ler PDFs de normas e propostas | `apt-get install poppler-utils` |
-| `python3-yaml` | Validação de YAML, listas de verificação, PNCP | `apt-get install python3-yaml` |
-| `python3-lxml` | Conferência do TR contra o docx da AGU | `apt-get install python3-lxml` |
-| `fpdf2` (em `.venv/`) | Anexo I do ETP em PDF | `python3 -m venv .venv && .venv/bin/pip install fpdf2 pyyaml` |
-| `fonts-dejavu-core` | Fonte do Anexo I | `apt-get install fonts-dejavu-core` |
+| `python3` com `venv` | Criar o `.venv` do repositório | `apt-get install python3-venv` |
+| Fonte DejaVu | PDFs (Anexo I do ETP, anexos do TR) | `apt-get install fonts-dejavu-core` |
 
-No Windows, use o WSL. No macOS, use `brew install pandoc poppler` e `pip install pyyaml lxml`.
+O resto fica no `.venv/`, com versões fixas em `requirements.txt`:
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+```
+
+| Pacote (`.venv/`) | Para quê |
+|---|---|
+| `PyYAML` | Validação de YAML, metadados, listas de verificação, PNCP |
+| `lxml` | Conferência do TR contra o docx da AGU |
+| `fpdf2` | Anexo I do ETP e anexos do TR em PDF |
+| `pypandoc_binary` | O **pandoc**, embutido: build do DFD, do ETP e do TR, conversão de modelos |
+| `pypdfium2` | Leitura de PDFs de normas e propostas (`scripts/ler-pdf.py`), no lugar do poppler |
+
+Não é preciso ativar o `.venv`. Os scripts Python se reexecutam nele sozinhos
+(`scripts/_ambiente.py`), e os scripts shell pegam dele o Python e o pandoc
+(`scripts/_ambiente.sh`). Sem `.venv`, tudo cai no Python e no pandoc do sistema, se houver.
+
+No Windows, use o WSL. No macOS, os mesmos comandos funcionam; a fonte vem de
+`brew install --cask font-dejavu`. Se a fonte estiver noutra pasta, aponte-a em `FONTES_TTF`.
 
 Para conferir o ambiente:
 
 ```bash
-scripts/validar.sh      # barato, não altera arquivos rastreados
+python3 scripts/_ambiente.py   # o que está instalado e o que falta
+scripts/validar.sh             # barato, não altera arquivos rastreados
 ```
 
 Num repositório recém-criado, o resultado esperado é uma lista de avisos de placeholder
