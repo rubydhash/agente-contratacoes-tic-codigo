@@ -8,11 +8,19 @@ preservando a formatação. O trecho a copiar fica entre os comentários "INÍCI
 COPIAR NO SEI"; o resto do arquivo serve só para visualização. O cabeçalho e as folhas de estilo
 são reaproveitados, sem alteração, de templates/sei/documento-base.html.
 
+As linhas da tabela vêm das justificativas do próprio TR: cada bloco "::: justificativa", em
+cinza logo abaixo do item modificado (código de formatação visual do IPP AGU/MGI de TIC, ver
+scripts/tr_marcas.py), vira uma linha, com o tipo (inclusão, ajuste, supressão) lido das marcas
+do item e dos subitens que ele cobre. Assim, o texto do TR e o do despacho são o mesmo.
+
 Uso: scripts/gerar-despacho.py
 """
 import os, re, sys
 
-RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import tr_marcas as tm_   # noqa: E402
+
+RAIZ = tm_.RAIZ
 REF = os.path.join(RAIZ, "templates/sei/documento-base.html")
 OUT = os.path.join(RAIZ, "despachos/justificativa-modelo-agu.html")
 
@@ -46,10 +54,39 @@ def linha(item, tipo, paras):
     ROWS.append((ordem_item(item), len(ROWS),
                  "\t\t<tr>\n" + cell_item(item) + cell_just(body) + "\t\t</tr>\n"))
 
-A = lambda i, *p: linha(i, "Altera&ccedil;&atilde;o", p)
+# Legado: chamadas A/I/E digitadas aqui. O lugar da justificativa agora é o TR.
+A = lambda i, *p: linha(i, "Ajuste", p)
 I = lambda i, *p: linha(i, "Inclus&atilde;o", p)
-E = lambda i, *p: linha(i, "Exclus&atilde;o", p)
+E = lambda i, *p: linha(i, "Supress&atilde;o", p)
 N = lambda i, *p: linha(i, None, p)
+
+
+def linhas_do_tr():
+    """Uma linha por bloco ::: justificativa do TR.
+
+    O bloco cobre o item em que está e os subitens marcados que não tenham justificativa
+    própria; o tipo da linha junta as marcas de todos eles.
+    """
+    tr, _, _ = tm_.le_tr(RAIZ)
+    grupos = {n: [n] for n, it in tr.items() if it["justificativa"]}
+    for n, it in tr.items():
+        if n in grupos or not (tm_.tipos(it) - {"preenchimento"}):
+            continue
+        partes = n.split(".")
+        for i in range(len(partes) - 1, 1, -1):
+            p = ".".join(partes[:i])
+            if p in grupos:
+                grupos[p].append(n)
+                break
+    for n, membros in grupos.items():
+        ts = set().union(*(tm_.tipos(tr[m]) for m in membros))
+        if len(ts) > 1:
+            ts.discard("preenchimento")
+        outros = sorted((m for m in membros if m != n),
+                        key=lambda x: [int(y) for y in x.split(".")])
+        item = n + (" e " + ", ".join(outros) if outros else "")
+        rot = tm_.para_html(tm_.rotulo(ts)) or None
+        linha(item, rot, [tm_.para_html(p) for p in tr[n]["justificativa"]])
 
 def header_row(txt):
     return ('\t\t<tr>\n\t\t\t<td colspan="2" data-celllook="0" role="rowheader" '
@@ -65,12 +102,11 @@ def col_header_row():
             'do modelo</strong></p>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</td>\n'
             '\t\t\t<td class="dark-mode-color-black" data-celllook="0" '
             'style="width: 643px; background-color: rgb(187, 187, 187);">\n\t\t\t<div>\n\t\t\t<div>\n'
-            '\t\t\t<p class="Tabela_Texto_Centralizado"><strong>Inclus&otilde;es, modifica&ccedil;&otilde;es '
-            'e exclus&otilde;es</strong></p>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</td>\n\t\t</tr>\n')
+            '\t\t\t<p class="Tabela_Texto_Centralizado"><strong>Inclus&otilde;es, ajustes '
+            'e supress&otilde;es</strong></p>\n\t\t\t</div>\n\t\t\t</div>\n\t\t\t</td>\n\t\t</tr>\n')
 
-SUP = ("Item mantido na posi&ccedil;&atilde;o original do Termo de Refer&ecirc;ncia, com a "
-       "reda&ccedil;&atilde;o &ldquo;Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).&rdquo;, "
-       "de modo a preservar a numera&ccedil;&atilde;o do modelo. ")
+# Frase única que descreve o código de cores; a mesma sai na legenda do TR montado.
+LEGENDA = tm_.legenda_html()
 
 
 # ============================================================ CABEÇALHO DO DESPACHO
@@ -88,14 +124,16 @@ SIGNATARIO_NOME = "NOME"
 SIGNATARIO_CARGO = "CARGO"
 
 # ============================================================ LINHAS DO DESPACHO
-# Uma chamada por afastamento do modelo, com o número do item como no TR:
-#   A("4.14", "O que mudou.", "Razão.")                 alteração
-#   I("4.1.6 a 4.1.14", "O que foi incluído.", ...)     inclusão (item novo, sem correspondente)
-#   E("2.3 e 2.4", SUP + "Por que não se aplica.")      exclusão (item mantido como "Suprimido")
-#   N("Geral — ...", "Texto.")                          linha informativa, sem afastamento
-# A ordem no script não importa: as linhas saem ordenadas pela numeração.
-# scripts/conferir-modelo-agu.py confere nos dois sentidos: todo afastamento do TR precisa de
-# linha aqui, e toda linha A/I/E precisa apontar um afastamento efetivo.
+# As linhas de cada afastamento vêm do TR (blocos ::: justificativa), por linhas_do_tr().
+# Aqui ficam só as linhas informativas gerais:
+#   N("Geral — ...", "Texto.")
+# Legado, para repositórios que ainda não levaram a justificativa ao TR (a conferência avisa):
+#   A("4.14", "O que mudou.", "Razão.")   ajuste
+#   I("4.1.6 a 4.1.14", "...")            inclusão
+#   E("2.3 e 2.4", "...")                 supressão
+# A ordem não importa: as linhas saem ordenadas pela numeração.
+# scripts/conferir-modelo-agu.py confere nos dois sentidos: todo afastamento precisa de
+# justificativa, e toda justificativa precisa apontar um afastamento efetivo.
 
 # ------------------------------------------------------------ GERAL
 N("Geral &mdash; vers&atilde;o do modelo",
@@ -107,14 +145,11 @@ N("Geral &mdash; vers&atilde;o do modelo",
 N("Geral &mdash; numera&ccedil;&atilde;o",
   "A numera&ccedil;&atilde;o deste Termo de Refer&ecirc;ncia segue <strong>item a item</strong> a do modelo, tal como "
   "exibida pela numera&ccedil;&atilde;o autom&aacute;tica do documento-modelo. Os itens do modelo que n&atilde;o se "
-  "aplicam <strong>n&atilde;o foram apagados</strong>: permanecem na posi&ccedil;&atilde;o original, com a "
-  "reda&ccedil;&atilde;o &ldquo;<em>Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).</em>&rdquo;. "
-  "Assim, a confer&ecirc;ncia entre esta justificativa e o artefato &eacute; direta, sem tabela de tradu&ccedil;&atilde;o "
-  "intermedi&aacute;ria.",
-  "O texto do modelo foi mantido <strong>literalmente</strong> fora dos trechos alterados, inclusive quanto &agrave; "
-  "grafia &ldquo;o Contratado&rdquo; e &ldquo;o Contratante&rdquo;. Todo trecho inclu&iacute;do ou alterado &mdash; "
-  "inclusive o preenchimento de campos que o modelo deixa em aberto e a escolha entre alternativas &mdash; est&aacute; "
-  "<strong>destacado na cor azul</strong> no Termo de Refer&ecirc;ncia.",
+  "aplicam <strong>n&atilde;o foram apagados</strong>: permanecem na posi&ccedil;&atilde;o original, com o "
+  "texto do modelo <strong>tachado</strong>. Assim, a confer&ecirc;ncia entre esta justificativa e o artefato "
+  "&eacute; direta, sem tabela de tradu&ccedil;&atilde;o intermedi&aacute;ria.",
+  "O texto do modelo foi mantido <strong>literalmente</strong> fora dos trechos marcados, inclusive quanto &agrave; "
+  "grafia &ldquo;o Contratado&rdquo; e &ldquo;o Contratante&rdquo;. " + LEGENDA,
   "Itens sem correspondente no modelo foram acrescidos sem deslocar nenhum item do modelo: como "
   "<strong>subitens</strong> do item do modelo a que se referem, ou como itens novos numerados <strong>ap&oacute;s o "
   "&uacute;ltimo item do cap&iacute;tulo</strong>.")
@@ -127,7 +162,8 @@ N("Geral &mdash; estrutura de cap&iacute;tulos",
   "e disposi&ccedil;&otilde;es finais s&atilde;o os de n&uacute;meros 10 a 13.")
 
 # ------------------------------------------------------------ AFASTAMENTOS
-# (acrescentar aqui, à medida que o TR for redigido)
+# Vêm do TR. Não acrescente linhas aqui: escreva a justificativa no TR, logo abaixo do item.
+linhas_do_tr()
 
 
 # ----------------------------------------------------------------- escrita
@@ -142,8 +178,8 @@ def main():
               'data-tablestyle="MsoTableGrid" dir="ltr" '
               'style="border-collapse:collapse;margin-left:auto;margin-right:auto;width:792px;">\n'
               '\t<tbody>\n' % (len(ROWS) + 2))
-    tabela += header_row("Termo de Refer&ecirc;ncia &mdash; inclus&otilde;es, modifica&ccedil;&otilde;es e "
-                         "exclus&otilde;es identificadas na cor azul")
+    tabela += header_row("Termo de Refer&ecirc;ncia &mdash; inclus&otilde;es, ajustes e supress&otilde;es, "
+                         "conforme o c&oacute;digo de formata&ccedil;&atilde;o visual do IPP AGU/MGI de TIC")
     tabela += col_header_row()
     tabela += "".join(r for _, _, r in sorted(ROWS))
     tabela += "\t</tbody>\n</table>\n</div>\n"
@@ -173,9 +209,9 @@ def main():
 <p class="Texto_Justificado_Recuo_Primeira_Linha">&nbsp;&nbsp;<br />
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Prezado(a)&nbsp;Sr.(a),</p>
 
-<p class="Texto_Justificado_Recuo_Primeira_Linha">O Termo de Refer&ecirc;ncia n&ordm; {TR_NUMERO}, instru&iacute;do com {ARTEFATOS}, foi elaborado a partir do <strong>Modelo de Termo de Refer&ecirc;ncia para Contrata&ccedil;&atilde;o de Servi&ccedil;os de Tecnologia da Informa&ccedil;&atilde;o e Comunica&ccedil;&atilde;o &mdash; Lei n&ordm; 14.133, de 2021</strong>, da C&acirc;mara Nacional de Modelos de Licita&ccedil;&otilde;es e Contratos da Consultoria-Geral da Uni&atilde;o, aprovado pela Secretaria de Governo Digital, na sua <strong>atualiza&ccedil;&atilde;o de abril de 2026</strong>. Informamos abaixo as inclus&otilde;es, modifica&ccedil;&otilde;es e exclus&otilde;es efetuadas em rela&ccedil;&atilde;o &agrave;quele modelo.</p>
+<p class="Texto_Justificado_Recuo_Primeira_Linha">O Termo de Refer&ecirc;ncia n&ordm; {TR_NUMERO}, instru&iacute;do com {ARTEFATOS}, foi elaborado a partir do <strong>Modelo de Termo de Refer&ecirc;ncia para Contrata&ccedil;&atilde;o de Servi&ccedil;os de Tecnologia da Informa&ccedil;&atilde;o e Comunica&ccedil;&atilde;o &mdash; Lei n&ordm; 14.133, de 2021</strong>, da C&acirc;mara Nacional de Modelos de Licita&ccedil;&otilde;es e Contratos da Consultoria-Geral da Uni&atilde;o, aprovado pela Secretaria de Governo Digital, na sua <strong>atualiza&ccedil;&atilde;o de abril de 2026</strong>. Informamos abaixo as inclus&otilde;es, ajustes e supress&otilde;es efetuados em rela&ccedil;&atilde;o &agrave;quele modelo.</p>
 
-<p class="Texto_Justificado_Recuo_Primeira_Linha">A numera&ccedil;&atilde;o do Termo de Refer&ecirc;ncia segue <strong>item a item</strong> a do modelo. Os itens do modelo que n&atilde;o se aplicam permanecem na posi&ccedil;&atilde;o original, com a reda&ccedil;&atilde;o &ldquo;<em>Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).</em>&rdquo;, de modo que a confer&ecirc;ncia entre esta justificativa e o artefato seja direta. Os trechos inclu&iacute;dos ou alterados est&atilde;o <strong>destacados na cor azul</strong> no Termo de Refer&ecirc;ncia.</p>
+<p class="Texto_Justificado_Recuo_Primeira_Linha">A numera&ccedil;&atilde;o do Termo de Refer&ecirc;ncia segue <strong>item a item</strong> a do modelo. Os itens e trechos do modelo que n&atilde;o se aplicam permanecem na posi&ccedil;&atilde;o original, <strong>tachados</strong>, de modo que a confer&ecirc;ncia entre esta justificativa e o artefato seja direta. {LEGENDA} As justificativas abaixo reproduzem as que constam, em fonte cinza, no pr&oacute;prio Termo de Refer&ecirc;ncia.</p>
 
 <p class="Texto_Justificado_Recuo_Primeira_Linha_Esp_Simples">&nbsp;</p>
 

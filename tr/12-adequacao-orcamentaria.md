@@ -5,16 +5,17 @@ fonte_in_94: "art. 12 IX; art. 21"
 capitulo_modelo_agu: 12
 status: rascunho           # rascunho | revisao | aprovado
 autor: ""
-ultima_alteracao: 2026-09-29
+ultima_alteracao: 2026-11-19
 pendencias: []
 ---
 # 12. ADEQUAÇÃO ORÇAMENTÁRIA
 
 <!-- Texto-base: Modelo AGU de TR de Serviços de TIC, abr/2026, reproduzido literalmente
-com a numeração do Word. Regras de redação em docs/redacao-tr.md: fora do azul, o texto é o do
-modelo; item que não se aplica fica na posição como
-"N.N. [Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).]{.azul}";
-todo afastamento sai em azul e ganha linha em scripts/gerar-despacho.py.
+com a numeração do Word. Afastamentos no código de cores do IPP AGU/MGI de TIC (regras em
+docs/redacao-tr.md): inclusão [em vermelho]{.inclusao}; ajuste ~~texto original~~ [em verde]{.ajuste};
+preenchimento de lacuna [em azul]{.preenchimento}; supressão ~~tachada~~, sem apagar o texto do
+modelo. Inclusão, ajuste e supressão levam bloco "::: justificativa" logo abaixo do item: é dali
+que scripts/gerar-despacho.py monta o despacho.
 Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 12.1. As despesas decorrentes da presente contratação correrão à conta de recursos específicos consignados no Orçamento Geral da União.

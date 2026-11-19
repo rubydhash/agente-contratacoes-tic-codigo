@@ -60,11 +60,15 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _ambiente  # noqa: E402
+_ambiente.usar_venv(__file__)   # bibliotecas do .venv (requirements.txt)
+
 try:
     import yaml
 except ImportError:  # pragma: no cover
-    sys.exit("ERRO: PyYAML ausente. Use .venv/bin/python (python3 -m venv .venv && "
-             ".venv/bin/pip install pyyaml)")
+    sys.exit("ERRO: PyYAML ausente. Crie o .venv: python3 -m venv .venv && "
+             ".venv/bin/pip install -r requirements.txt")
 
 # ----------------------------- Configuração --------------------------------
 
@@ -1013,10 +1017,15 @@ def cmd_baixar(args):
     saida = os.path.abspath(args.saida)
     falhas = 0
     for i, c in enumerate(selecao, 1):
-        nome_pasta = f"{slug(c['orgao'] or 'orgao')}_{c['cnpj']}_{c['ano']}_{c['sequencial']}"
-        log(f"[{i}/{len(selecao)}] {nome_pasta}")
         det = le_json(os.path.join(pasta, "detalhes",
                                    f"{c['cnpj']}_{c['ano']}_{c['sequencial']}.json"))
+        # O nome do órgão no índice de busca do PNCP pode divergir do CNPJ: em contratação
+        # anterior, o índice deu a uma autarquia federal o nome de outro órgão. O detalhe da
+        # compra (razão social do CNPJ) prevalece.
+        orgao = (((det or {}).get("compra") or {}).get("orgaoEntidade") or {}).get("razaoSocial") \
+            or c["orgao"] or "orgao"
+        nome_pasta = f"{slug(orgao)}_{c['cnpj']}_{c['ano']}_{c['sequencial']}"
+        log(f"[{i}/{len(selecao)}] {nome_pasta}")
         try:
             arquivos = (det or {}).get("arquivos")
             if arquivos is None:
@@ -1033,7 +1042,7 @@ def cmd_baixar(args):
         for a in arquivos:
             seq_doc = a.get("sequencialDocumento")
             titulo = sanitiza_nome(a.get("titulo") or f"arquivo_{seq_doc}")
-            nome = f"{slug(c['orgao'] or 'orgao')}_{titulo}"
+            nome = f"{slug(orgao)}_{titulo}"
             if nome in usados:
                 base_n, _, ext = nome.rpartition(".")
                 nome = f"{base_n}_{seq_doc}.{ext}" if base_n else f"{nome}_{seq_doc}"

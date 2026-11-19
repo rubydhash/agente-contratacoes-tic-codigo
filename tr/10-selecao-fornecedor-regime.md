@@ -5,23 +5,24 @@ fonte_in_94: "art. 12 X e XI; art. 22; art. 23"
 capitulo_modelo_agu: 10
 status: rascunho           # rascunho | revisao | aprovado
 autor: ""
-ultima_alteracao: 2026-09-29
+ultima_alteracao: 2026-11-19
 pendencias: []
 ---
 # 10. FORMA E CRITÉRIOS DE SELEÇÃO DO FORNECEDOR E REGIME DE EXECUÇÃO
 
 <!-- Texto-base: Modelo AGU de TR de Serviços de TIC, abr/2026, reproduzido literalmente
-com a numeração do Word. Regras de redação em docs/redacao-tr.md: fora do azul, o texto é o do
-modelo; item que não se aplica fica na posição como
-"N.N. [Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).]{.azul}";
-todo afastamento sai em azul e ganha linha em scripts/gerar-despacho.py.
+com a numeração do Word. Afastamentos no código de cores do IPP AGU/MGI de TIC (regras em
+docs/redacao-tr.md): inclusão [em vermelho]{.inclusao}; ajuste ~~texto original~~ [em verde]{.ajuste};
+preenchimento de lacuna [em azul]{.preenchimento}; supressão ~~tachada~~, sem apagar o texto do
+modelo. Inclusão, ajuste e supressão levam bloco "::: justificativa" logo abaixo do item: é dali
+que scripts/gerar-despacho.py monta o despacho.
 Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 **Forma de seleção e critério de julgamento da proposta**
 
 10.1. O fornecedor será selecionado por meio da realização de procedimento de LICITAÇÃO, na modalidade [PREGÃO] OU [CONCORRÊNCIA], sob a forma ELETRÔNICA, com adoção do critério de julgamento pelo [MENOR PREÇO] OU [MAIOR DESCONTO] OU [TÉCNICA E PREÇO].
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 10.2. O fornecedor será selecionado por meio de contratação direta com fundamento no art. [74 OU 75], inciso [indicar o inciso], da Lei nº 14.133, de 1º de abril de 2021, com base no seguinte fundamento: [descrever a fundamentação da contratação para enquadramento no dispositivo legal indicado]
 
@@ -83,7 +84,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 10.26. balanço patrimonial, demonstração de resultado de exercício e demais demonstrações contábeis ................... [do último exercício social] OU [dos dois últimos exercícios sociais], já exigíveis e apresentados na forma da lei, comprovando, índices de Liquidez Geral (LG), Liquidez Corrente (LC), e Solvência Geral (SG) superiores a 1 (um), obtidos por meio da aplicação das seguintes fórmulas:
 
-<!-- TABELA DO MODELO no item 10.26: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: azul … ::: -->
+<!-- TABELA DO MODELO no item 10.26: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: preenchimento … ::: (linhas acrescidas: ::: inclusao) -->
 
 10.27. Caso a empresa apresente resultado inferior ou igual a 1 (um) em qualquer dos índices de Liquidez Geral (LG), Solvência Geral (SG) e Liquidez Corrente (LC), será exigido, para fins de habilitação, [capital mínimo] OU [patrimônio líquido mínimo] de [definir percentual, limitado a 10%] do [valor total estimado da contratação – aplicável para o contrato de escopo] OU [valor total estimado da contratação para o período de doze meses – aplicável para o contrato de serviço continuado] OU [valor total estimado da parcela pertinente].
 

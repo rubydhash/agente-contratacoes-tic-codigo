@@ -25,8 +25,14 @@ item ou se sobrar item. ADR: decisoes/2026-11-12-lista-verificacao-em-despacho-s
 import html
 import re
 import sys
+import os
 import unicodedata
 from pathlib import Path
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _ambiente  # noqa: E402
+_ambiente.usar_venv(__file__)   # bibliotecas do .venv (requirements.txt)
+
 
 import yaml
 

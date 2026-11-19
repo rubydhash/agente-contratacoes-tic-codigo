@@ -4,14 +4,18 @@
 #   scripts/build.sh           # gera build/DFD.docx, build/ETP.docx e build/TR.docx
 #   scripts/build.sh dfd       # apenas DFD
 #   scripts/build.sh etp       # apenas ETP
-#   scripts/build.sh tr        # apenas TR (docx)
-#   scripts/build.sh tr-html  # apenas TR (html, destaques em azul, para colar no SEI)
+#   scripts/build.sh tr        # apenas TR (docx + anexos em PDF)
+#   scripts/build.sh tr-html   # apenas TR (html, com o codigo de cores do IPP, para colar no SEI)
+#   scripts/build.sh anexos-tr # apenas os anexos do TR em markdown (tr/ANEXO *.md -> build/*.pdf)
 #
-# Requer: pandoc.
+# Requer o .venv (requirements.txt): Python e pandoc vem de la (scripts/_ambiente.sh). Sem
+# .venv, usa python3 e pandoc do sistema. Os anexos do TR em PDF exigem fpdf2 e a fonte DejaVu.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+source scripts/_ambiente.sh
+[[ -n "$PANDOC" ]] || { echo "ERRO: pandoc ausente. Crie o .venv: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt" >&2; exit 1; }
 mkdir -p build
 
 REFERENCE_DOC=""
@@ -21,17 +25,30 @@ fi
 
 # Leitor e filtros do TR.
 #
-# O TR marca, no proprio markdown, os trechos que se afastam do modelo AGU:
-#   [trecho]{.azul}   fragmento alterado dentro de um item do modelo
-#   ::: azul ... :::  item inteiro incluido ou substancialmente alterado
+# O TR marca, no proprio markdown, os afastamentos do modelo AGU conforme o codigo de
+# formatacao visual do IPP AGU/MGI de TIC (scripts/tr_marcas.py):
+#   [texto]{.inclusao}  ::: inclusao       vermelho  inclusao
+#   [texto]{.ajuste}                       verde     ajuste, apos o original tachado
+#   [texto]{.preenchimento}                azul      preenchimento de lacuna
+#   ~~texto~~                              tachado   supressao / alternativa nao adotada
+#   ::: justificativa                      cinza     justificativa, abaixo do item
 #
-# Isso exige as extensoes bracketed_spans e fenced_divs no leitor, o filtro
-# scripts/azul.lua para traduzir as marcacoes em estilos, e um reference.docx
-# que defina esses estilos em azul (scripts/estilos-docx.py).
+# Isso exige as extensoes bracketed_spans e fenced_divs no leitor (o gfm ja le o tachado),
+# o filtro scripts/marcas.lua para traduzir as marcas em estilos, e um reference.docx
+# que defina esses estilos (scripts/estilos-docx.py).
 FROM_TR="gfm+bracketed_spans+fenced_divs"
-AZUL_FILTER="--lua-filter=scripts/azul.lua"
+MARCAS_FILTER="--lua-filter=scripts/marcas.lua"
 
-# prepara_reference_azul → ecoa o caminho do reference.docx com os estilos de destaque
+# legenda_tr → ecoa o caminho de um markdown com a legenda do codigo de cores, a mesma
+# frase do despacho (scripts/tr_marcas.py), para abrir o TR montado
+legenda_tr() {
+  [[ -z "$TMPDIR_BUILD" ]] && TMPDIR_BUILD="$(mktemp -d)"
+  local saida="$TMPDIR_BUILD/00-legenda.md"
+  "$PY" scripts/tr_marcas.py legenda-md > "$saida"
+  echo "$saida"
+}
+
+# prepara_reference_azul → ecoa o caminho do reference.docx com os estilos das marcas
 prepara_reference_azul() {
   [[ -z "$TMPDIR_BUILD" ]] && TMPDIR_BUILD="$(mktemp -d)"
   local base="$TMPDIR_BUILD/ref-base.docx"
@@ -39,9 +56,9 @@ prepara_reference_azul() {
   if [[ -f templates/agu-referencia.docx ]]; then
     cp templates/agu-referencia.docx "$base"
   else
-    pandoc --print-default-data-file reference.docx > "$base"
+    "$PANDOC" --print-default-data-file reference.docx > "$base"
   fi
-  python3 scripts/estilos-docx.py "$base" "$saida" >&2
+  "$PY" scripts/estilos-docx.py "$base" "$saida" >&2
   echo "$saida"
 }
 
@@ -50,7 +67,7 @@ prepara_reference_azul() {
 # texto, levando ao docx as pendências internas da Equipe de Planejamento.
 # Por isso o frontmatter é removido de todas as seções antes da montagem — os
 # metadados do documento vêm dos arquivos 00-metadados.yaml, via --metadata-file.
-TMPDIR_BUILD=""
+TMPDIR_BUILD="$(mktemp -d)"   # criado aqui: as funcoes rodam em subshell ($(...), <(...))
 cleanup() { [[ -n "$TMPDIR_BUILD" && -d "$TMPDIR_BUILD" ]] && rm -rf "$TMPDIR_BUILD"; }
 trap cleanup EXIT
 
@@ -74,7 +91,7 @@ build_dfd() {
     dfd/01-dfd.md
   )
   mapfile -t files < <(strip_frontmatter "${files[@]}")
-  pandoc \
+  "$PANDOC" \
     --from=gfm --to=docx \
     --metadata-file=etp/00-metadados.yaml \
     --metadata-file=dfd/00-metadados.yaml \
@@ -118,15 +135,15 @@ build_etp() {
   # Ver decisoes/2026-10-09-anexo-i-no-docx-do-etp.md.
   [[ -z "$TMPDIR_BUILD" ]] && TMPDIR_BUILD="$(mktemp -d)"
   local anexo="$TMPDIR_BUILD/anexo-i-fontes.md"
-  python3 scripts/anexo-fontes-docx.py md "$anexo"
-  pandoc \
+  "$PY" scripts/anexo-fontes-docx.py md "$anexo"
+  "$PANDOC" \
     --from=gfm --to=docx \
     --metadata-file=etp/00-metadados.yaml \
     --resource-path=.:etp \
     $REFERENCE_DOC \
     -o "$out" \
     "${files[@]}" "$anexo"
-  python3 scripts/anexo-fontes-docx.py paisagem "$out"
+  "$PY" scripts/anexo-fontes-docx.py paisagem "$out"
   echo ">> $out (com o Anexo I em paisagem)"
 }
 
@@ -151,26 +168,27 @@ build_tr() {
     tr/13-disposicoes-finais.md
   )
   mapfile -t files < <(strip_frontmatter "${files[@]}")
+  files=("$(legenda_tr)" "${files[@]}")
   local ref
   ref="$(prepara_reference_azul)"
-  pandoc \
+  "$PANDOC" \
     --from="$FROM_TR" --to=docx \
     --metadata-file=etp/00-metadados.yaml \
     --metadata-file=tr/00-metadados.yaml \
-    $AZUL_FILTER \
+    $MARCAS_FILTER \
     --reference-doc="$ref" \
     -o "$out" \
     "${files[@]}"
   echo ">> $out"
-  echo ">> trechos alterados em relacao ao modelo AGU saem em azul (estilos TrechoAlterado e ItemAlterado)"
+  echo ">> afastamentos do modelo AGU no codigo de cores do IPP (estilos Trecho*/Item*/Justificativa)"
 }
 
-# Versao HTML do TR, com os trechos alterados em azul — para revisao e para colagem no
-# Compras.gov.br e no SEI. Mesma fonte de conteudo do docx. O azul sai como estilo embutido
-# em cada trecho (scripts/azul.lua), que e o que sobrevive a colagem em editores de texto
-# rico; a folha de estilo abaixo cuida so da leitura na tela.
+# Versao HTML do TR, com o codigo de cores do IPP — para revisao e para colagem no
+# Compras.gov.br e no SEI. Mesma fonte de conteudo do docx. Cor e tachado saem como estilo
+# embutido em cada trecho (scripts/marcas.lua), que e o que sobrevive a colagem em editores
+# de texto rico; a folha de estilo abaixo cuida so da leitura na tela.
 build_tr_html() {
-  echo ">> Montando TR (HTML, destaques em azul)..."
+  echo ">> Montando TR (HTML, codigo de cores do IPP)..."
   local out="build/TR.html"
   local files=(
     tr/01-condicoes-gerais.md
@@ -188,11 +206,14 @@ build_tr_html() {
     tr/13-disposicoes-finais.md
   )
   mapfile -t files < <(strip_frontmatter "${files[@]}")
+  files=("$(legenda_tr)" "${files[@]}")
   [[ -z "$TMPDIR_BUILD" ]] && TMPDIR_BUILD="$(mktemp -d)"
-  cat > "$TMPDIR_BUILD/azul.css" <<'CSSEOF'
+  cat > "$TMPDIR_BUILD/marcas.css" <<'CSSEOF'
 body { font-family: "Times New Roman", serif; font-size: 12pt; text-align: justify;
        max-width: 52em; margin: 2em auto; padding: 0 16px; background: #fff; color: #000; }
-.azul, .azul p, .azul td, span.azul { color: #0000CC; }
+/* cores: as de scripts/tr_marcas.py; o estilo embutido de scripts/marcas.lua prevalece */
+.inclusao { color: #FF0000; } .ajuste { color: #00B050; } .preenchimento { color: #0000FF; }
+.justificativa { color: #808080; } .azul { color: #0000CC; }
 table { border-collapse: collapse; display: block; overflow-x: auto; }
 table, th, td { border: 1px solid #000; padding: 3pt; }
 h1 { font-size: 13pt; background: #e6e6e6; padding: 4pt; }
@@ -200,15 +221,23 @@ nav#TOC { font-family: sans-serif; font-size: 10pt; border: 1px solid #ccc; padd
 nav#TOC ul { columns: 2; }
 code { font-family: inherit; background: #fff3c4; }
 CSSEOF
-  pandoc \
+  "$PANDOC" \
     --from="$FROM_TR" --to=html --standalone --embed-resources \
     --metadata title="Termo de Referência" \
     --toc --toc-depth=1 \
-    --css="$TMPDIR_BUILD/azul.css" \
-    $AZUL_FILTER \
+    --css="$TMPDIR_BUILD/marcas.css" \
+    $MARCAS_FILTER \
     -o "$out" \
     "${files[@]}"
   echo ">> $out"
+}
+
+# Anexos do TR que nascem no repositorio (tr/ANEXO *.md): convertidos para PDF a cada build
+# por scripts/gerar-anexos-tr.py (fpdf2). Anexo em docx (Termo de Compromisso) nao passa por
+# aqui. Ver decisoes/2026-11-19-anexos-tr-md-pdf.md.
+build_anexos_tr() {
+  echo ">> Gerando os anexos do TR em PDF..."
+  "$PY" scripts/gerar-anexos-tr.py
 }
 
 # O despacho de justificativa (despachos/justificativa-modelo-agu.html) NAO passa por este
@@ -220,8 +249,9 @@ CSSEOF
 case "${1:-all}" in
   dfd)     build_dfd ;;
   etp)     build_etp ;;
-  tr)      build_tr ;;
+  tr)      build_tr && build_anexos_tr ;;
   tr-html) build_tr_html ;;
-  all)     build_dfd && build_etp && build_tr ;;
-  *)       echo "Uso: $0 [dfd|etp|tr|tr-html|all]"; exit 1 ;;
+  anexos-tr) build_anexos_tr ;;
+  all)     build_dfd && build_etp && build_tr && build_anexos_tr ;;
+  *)       echo "Uso: $0 [dfd|etp|tr|tr-html|anexos-tr|all]"; exit 1 ;;
 esac

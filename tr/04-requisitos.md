@@ -5,16 +5,17 @@ fonte_in_94: "art. 12 V; art. 16; Anexo I, itens 1, 4 e 7"
 capitulo_modelo_agu: 4
 status: rascunho           # rascunho | revisao | aprovado
 autor: ""
-ultima_alteracao: 2026-09-29
+ultima_alteracao: 2026-11-19
 pendencias: []
 ---
 # 4. REQUISITOS DA CONTRATAÇÃO
 
 <!-- Texto-base: Modelo AGU de TR de Serviços de TIC, abr/2026, reproduzido literalmente
-com a numeração do Word. Regras de redação em docs/redacao-tr.md: fora do azul, o texto é o do
-modelo; item que não se aplica fica na posição como
-"N.N. [Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).]{.azul}";
-todo afastamento sai em azul e ganha linha em scripts/gerar-despacho.py.
+com a numeração do Word. Afastamentos no código de cores do IPP AGU/MGI de TIC (regras em
+docs/redacao-tr.md): inclusão [em vermelho]{.inclusao}; ajuste ~~texto original~~ [em verde]{.ajuste};
+preenchimento de lacuna [em azul]{.preenchimento}; supressão ~~tachada~~, sem apagar o texto do
+modelo. Inclusão, ajuste e supressão levam bloco "::: justificativa" logo abaixo do item: é dali
+que scripts/gerar-despacho.py monta o despacho.
 Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 **Requisitos de Negócio:**
@@ -33,7 +34,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.2.1. [...].
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.3. Não faz parte do escopo da contratação a realização de capacitação técnica na utilização dos recursos relacionados ao objeto da presente contratação;
 
@@ -59,7 +60,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.9. Na execução dos serviços, deverão ser observados os seguintes prazos:
 
-<!-- TABELA DO MODELO no item 4.9: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: azul … ::: -->
+<!-- TABELA DO MODELO no item 4.9: reproduzir a partir de templates/agu-tr-servicos-tic.md e preencher dentro de ::: preenchimento … ::: (linhas acrescidas: ::: inclusao) -->
 
 4.9.1. [...].
 
@@ -99,7 +100,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.16. O prazo de garantia é aquele estabelecido na Lei nº 8.078, de 11 de setembro de 1990 (Código de Defesa do Consumidor), e suas atualizações.
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.17. O prazo de garantia contratual dos serviços, complementar à garantia legal, será de, no mínimo, ___ (____) meses, contado a partir do primeiro dia útil subsequente à data do recebimento definitivo do objeto.
 
@@ -109,7 +110,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.19. [...].
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.20. Não serão exigidos requisitos de experiência profissional para a presente a contratação.
 
@@ -119,7 +120,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.22. [...].
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.23. Não serão exigidos requisitos de formação da equipe para a presente a contratação.
 
@@ -145,7 +146,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.31. Não há necessidade de realização de avaliação prévia do local de execução dos serviços.
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.32. A avaliação prévia do local de execução dos serviços é imprescindível para o conhecimento pleno das condições e peculiaridades do objeto a ser contratado, sendo assegurado ao interessado o direito de realização de vistoria prévia, acompanhado por servidor designado para esse fim, de segunda à sexta-feira, das XX horas às XX horas.
 
@@ -201,7 +202,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.44. Não será admitida a subcontratação do objeto contratual.
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.45. É permitida a subcontratação parcial do objeto, até o limite de XX% (xxxxx por cento) do valor total do contrato, nas seguintes condições:
 
@@ -267,7 +268,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.63. Não haverá exigência da garantia da contratação dos art. 96 e seguintes da Lei nº 14.133, de 2021, pelas razões constantes do Estudo Técnico Preliminar.
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.64. Será exigida a garantia da contratação de que tratam os arts. 96 e seguintes da Lei nº 14.133, de 2021, com validade durante a execução do contrato e 90 (noventa) dias após término da vigência contratual, podendo o Contratado optar pela caução em dinheiro ou em títulos da dívida pública, seguro-garantia, fiança bancária ou título de capitalização, em valor correspondente a XX% (xxxxx por cento) do valor [total] OU [anual] da contratação.
 
@@ -347,7 +348,7 @@ Conferência: python3 scripts/conferir-modelo-agu.py -->
 
 4.83.3. [...].
 
-<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, como "Suprimido" -->
+<!-- OU — alternativas excludentes do modelo: adotar uma; as demais ficam na posição, tachadas (~~…~~) -->
 
 4.84. A demanda dos órgãos partícipes tem como base as seguintes características:
 

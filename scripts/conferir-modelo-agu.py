@@ -6,33 +6,53 @@ O modelo é lido diretamente do docx em referencia/ — e não de templates/, cu
 pelo pandoc perde a numeração automática do Word. A numeração é reconstruída a partir de
 word/numbering.xml e da cadeia de estilos, como o Word a exibe.
 
-Para cada item do TR, o texto fora do azul tem de reproduzir o modelo literalmente, e o
-azul tem de cobrir só o que de fato difere. Classes:
+As marcas seguem o "Código de formatação visual sugerida" do Instrumento de Padronização AGU/MGI
+de TIC (ver scripts/tr_marcas.py): inclusão em vermelho, ajuste em verde após o original tachado,
+preenchimento em azul, supressão tachada e justificativa em cinza abaixo do item.
 
-  IDENTICO             texto igual ao do modelo, sem azul
-  ALTERADO-MARCADO     difere do modelo, e toda a diferença está em azul
-  SUPRIMIDO            "[Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos).]{.azul}"
-  INCLUIDO             item sem correspondente no modelo, inteiramente em azul
-  ALTERADO-SEM-MARCA   há diferença fora do azul                                  (erro)
-  AZUL-EXCESSIVO       o azul cobre trecho que é texto literal do modelo           (erro)
-  INCLUIDO-SEM-MARCA   item sem correspondente no modelo com texto fora do azul    (erro)
-  NUMERACAO-DESLOCADA  o texto corresponde a outro número do modelo               (erro)
-  AUSENTE              item do modelo sem item de mesmo número no TR               (erro)
+Para cada item do TR:
+  - o texto sem cor (normal ou tachado) tem de reproduzir o modelo literalmente;
+  - o texto colorido tem de cobrir só o que de fato foi acrescentado;
+  - nenhum texto do modelo some: o que não se aplica fica tachado (só as lacunas do modelo,
+    <…>, […], XX, podem dar lugar ao preenchimento).
 
-Também confere o despacho (scripts/gerar-despacho.py) nos dois sentidos: todo afastamento
-precisa de linha no despacho, e toda linha do despacho precisa apontar um afastamento.
+Classes:
+  IDENTICO                texto igual ao do modelo, sem marca
+  PREENCHIDO              só preenchimento de lacunas, tabela do modelo ou escolha de alternativa "OU"
+  ALTERADO-MARCADO        inclusão, ajuste ou supressão parcial, toda marcada
+  SUPRIMIDO               item inteiro tachado, com o texto do modelo
+  INCLUIDO                item sem correspondente no modelo, inteiro em vermelho
+  ALTERADO-SEM-MARCA      texto diferente do modelo sem cor                               (erro)
+  TACHADO-FORA-DO-MODELO  o trecho tachado não é o texto do modelo                       (erro)
+  COR-EXCESSIVA           cor sobre trecho que é texto literal do modelo                 (erro)
+  SUPRESSAO-SEM-TACHADO   texto do modelo apagado em vez de tachado                      (erro)
+  INCLUIDO-SEM-MARCA      item sem correspondente no modelo com texto fora do vermelho   (erro)
+  NUMERACAO-DESLOCADA     o texto corresponde a outro número do modelo                   (erro)
+  AUSENTE                 item do modelo sem item de mesmo número no TR                  (erro)
+
+Justificativa: todo item com inclusão, ajuste ou supressão precisa de bloco ::: justificativa
+logo abaixo dele (ou de um item ascendente). Preenchimento e escolha de alternativa "OU" não
+precisam. Linhas A/I/E legadas em scripts/gerar-despacho.py ainda contam, com aviso. Também é
+erro justificativa sem afastamento.
 
 Uso:
   scripts/conferir-modelo-agu.py              # relatório em build/conferencia-modelo-agu.html
   scripts/conferir-modelo-agu.py --numerado   # também regrava templates/agu-tr-servicos-tic-numerado.md
 
-Sai com código 1 se houver erro. Requer python3 e lxml.
+Sai com código 1 se houver erro. Requer lxml, do .venv (requirements.txt).
 """
-import difflib, glob, html, os, re, sys, zipfile
+import difflib, html, os, re, sys, zipfile
 from collections import Counter, defaultdict
-from lxml import etree
 
-RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _ambiente  # noqa: E402
+_ambiente.usar_venv(__file__)   # bibliotecas do .venv (requirements.txt)
+
+from lxml import etree                                         # noqa: E402
+import tr_marcas as tm_                                       # noqa: E402
+from tr_marcas import normaliza, tokens, MARCAS_COR           # noqa: E402
+
+RAIZ = tm_.RAIZ
 # Modelo de referência do TR. Trocar o modelo (ex.: Compras de TIC set/2025, para aquisição de
 # bens) é trocar só este bloco e o NUMERADO abaixo.
 MODELO_REL = "referencia/modelos-agu/modelo-de-termo-de-referencia-servicos-tic-lei-no-14-133-abr-26.docx"
@@ -43,32 +63,15 @@ SAIDA = os.path.join(RAIZ, "build/conferencia-modelo-agu.html")
 NUMERADO = os.path.join(RAIZ, "templates/agu-tr-servicos-tic-numerado.md")
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
-SUPRIMIDO = "Suprimido. (Conforme Nota e/ou Justificativa anexada aos autos)."
-ERROS = ("ALTERADO-SEM-MARCA", "AZUL-EXCESSIVO", "INCLUIDO-SEM-MARCA",
-         "NUMERACAO-DESLOCADA", "AUSENTE")
-# Trecho azul que coincide com o modelo por até esta quantidade de palavras é tolerado:
+ERROS = ("ALTERADO-SEM-MARCA", "TACHADO-FORA-DO-MODELO", "COR-EXCESSIVA",
+         "SUPRESSAO-SEM-TACHADO", "INCLUIDO-SEM-MARCA", "NUMERACAO-DESLOCADA", "AUSENTE")
+# Trecho colorido que coincide com o modelo por até esta quantidade de palavras é tolerado:
 # é o conector que o difflib casa no meio de uma substituição ("de", "a", "o").
-TOLERANCIA_AZUL = 3
+TOLERANCIA_COR = 3
 
 
 def chave(num):
     return [int(x) for x in num.split(".")]
-
-
-# ------------------------------------------------------------------ normalização
-def normaliza(txt):
-    """Remove marcação markdown e diferenças só tipográficas."""
-    txt = re.sub(r"\*\*|__", "", txt)
-    txt = re.sub(r"(?<![\w*])\*(?!\s)|(?<!\s)\*(?![\w*])", "", txt)
-    txt = txt.replace("\\", "").replace("`", "")
-    for a, b in (("“", '"'), ("”", '"'), ("‘", "'"), ("’", "'"), (" ", " "),
-                 ("–", "-"), ("—", "-"), ("…", "...")):
-        txt = txt.replace(a, b)
-    return re.sub(r"\s+", " ", txt).strip()
-
-
-def tokens(txt):
-    return re.findall(r"\w+|[^\w\s]", txt)
 
 
 # ------------------------------------------------------------------ modelo (docx)
@@ -176,99 +179,10 @@ def le_modelo():
     return itens, ordem
 
 
+
 # ------------------------------------------------------------------ TR (markdown)
-RE_ITEM = re.compile(r"^\s*(\d+(?:\.\d+)+)\.\s+(.*)$")
-RE_CAP = re.compile(r"^#\s+(\d+)\.\s+(.*)$")
-RE_ALINEA = re.compile(r"^\s*([a-z]|[IVXL]+)\)\s+")
-
-
-def segmentos(txt, azul_div):
-    """Divide o parágrafo em [(texto, azul)] segundo os spans [..]{.azul}."""
-    if azul_div:
-        return [(txt, True)]
-    segs, pos = [], 0
-    for m in re.finditer(r"\]\{\.azul\}", txt):
-        fim = m.start()
-        prof, i = 0, fim - 1
-        while i >= pos:
-            if txt[i] == "]":
-                prof += 1
-            elif txt[i] == "[":
-                if prof == 0:
-                    break
-                prof -= 1
-            i -= 1
-        if i < pos:
-            continue
-        if i > pos:
-            segs.append((txt[pos:i], False))
-        segs.append((txt[i + 1:fim], True))
-        pos = m.end()
-    if pos < len(txt):
-        segs.append((txt[pos:], False))
-    return segs
-
-
 def le_tr():
-    itens, ordem, capitulos = {}, [], {}
-    arquivos = sorted(glob.glob(os.path.join(RAIZ, "tr/[0-9][0-9]-*.md")))
-    for f in arquivos:
-        s = open(f, encoding="utf-8").read()
-        s = re.sub(r"\A---\n.*?\n---\n", "", s, flags=re.S)
-        s = re.sub(r"<!--.*?-->", "", s, flags=re.S)
-        atual, div, par, par_azul = None, False, [], False
-
-        def fecha():
-            nonlocal par
-            if par and atual:
-                itens[atual]["pars"].append((" ".join(par), par_azul))
-            par = []
-
-        for linha in s.split("\n"):
-            l = linha.strip()
-            if re.match(r"^:::\s*\{?\.?azul\}?\s*$", l):
-                fecha(); div = True; continue
-            if l == ":::":
-                fecha(); div = False; continue
-            if not l:
-                fecha(); continue
-            m = RE_CAP.match(l)
-            if m:
-                fecha(); atual = None
-                capitulos[m.group(1)] = (normaliza(m.group(2)), os.path.basename(f))
-                continue
-            if l.startswith("|"):
-                fecha()
-                if atual:
-                    itens[atual]["tabela"] = True
-                continue
-            if re.match(r"^\*\*[^*].*\*\*$", l) and not RE_ITEM.match(l):
-                fecha(); ordem.append(("subtitulo", normaliza(l)))
-                continue
-            m = RE_ITEM.match(linha)
-            if m:
-                fecha()
-                atual = m.group(1)
-                if atual in itens:
-                    itens[atual]["duplicado"] = True
-                    continue
-                itens[atual] = {"pars": [], "tabela": False, "arquivo": os.path.basename(f),
-                                "recuo": len(linha) - len(linha.lstrip())}
-                ordem.append(("item", atual))
-                par, par_azul = [m.group(2)], div
-                continue
-            if RE_ALINEA.match(linha) or not par:
-                fecha(); par_azul = div
-            par.append(l)
-        fecha()
-    for it in itens.values():
-        segs = []
-        for i, (p, az) in enumerate(it["pars"]):
-            if i:
-                segs.append(("\n", False))
-            segs += segmentos(p, az)
-        it["segs"] = [(normaliza(t) if t != "\n" else t, a) for t, a in segs]
-    return itens, ordem, capitulos
+    return tm_.le_tr(RAIZ)
 
 
 # ------------------------------------------------------------------ comparação
@@ -285,55 +199,158 @@ def texto_tr(segs):
     return " ".join(t for t, _ in segs if t != "\n")
 
 
-def compara(mod_txt, segs):
-    """Devolve (classe, ops) com ops = [(tag, tokens_modelo, [(token, azul)])]."""
-    tm = tokens(mod_txt)
-    # conteúdo de placeholder do modelo (<...>, [...]) não é texto literal: pode sair em azul
+def lacunas(tm):
+    """Marca os tokens do modelo que são lacuna a preencher: <…>, […], XX, xxxxx.
+
+    "XX% (xxxxx por cento)" é lacuna inteira: o "%" colado ao XX e o parêntese que contém
+    xxxxx também contam, para que o valor por extenso possa ser preenchido de uma vez.
+    """
+    xis = [bool(re.fullmatch(r"X+|x{2,}", t)) for t in tm]
     ph, prof = [], 0
-    for t in tm:
+    for k, t in enumerate(tm):
         prof += t in ("<", "[")
-        ph.append(prof > 0)
+        ph.append(prof > 0 or xis[k] or (t == "%" and k > 0 and xis[k - 1]))
         prof -= prof > 0 and t in (">", "]")
-    tt = tokens_tr(segs)
-    sm = difflib.SequenceMatcher(None, tm, [t for t, _ in tt], autojunk=False)
-    ops = [(tag, tm[i1:i2], tt[j1:j2], ph[i1:i2]) for tag, i1, i2, j1, j2 in sm.get_opcodes()]
-    sem_marca = excesso = False
-    for k, (tag, mt, trt, mph) in enumerate(ops):
-        if tag == "equal":
-            run = 0
-            for (_, az), p in zip(trt, mph):
-                run = run + 1 if az and not p else 0
-                if run > TOLERANCIA_AZUL:
-                    excesso = True
-        elif tag in ("replace", "insert"):
-            if not all(az for _, az in trt):
-                sem_marca = True
-        elif tag == "delete":
-            # supressão parcial: aceita se encostada em trecho azul
-            antes = ops[k - 1][2][-1:] if k > 0 else []
-            depois = ops[k + 1][2][:1] if k + 1 < len(ops) else []
-            if not any(az for _, az in antes + depois):
-                sem_marca = True
-    if sem_marca:
-        return "ALTERADO-SEM-MARCA", [o[:3] for o in ops]
-    if excesso:
-        return "AZUL-EXCESSIVO", [o[:3] for o in ops]
-    ops = [o[:3] for o in ops]
-    if all(tag == "equal" for tag, _, _ in ops) and not any(az for _, az in tt):
-        return "IDENTICO", ops
-    return "ALTERADO-MARCADO", ops
-
-
-def eh_suprimido(segs):
-    txt = texto_tr(segs)
-    return txt == SUPRIMIDO or txt == f"[{SUPRIMIDO}]"
+    for k, t in enumerate(tm):
+        if t == "(":
+            fim = next((m for m in range(k + 1, min(k + 12, len(tm))) if tm[m] == ")"), None)
+            if fim and any(xis[k + 1:fim]):
+                for m in range(k, fim + 1):
+                    ph[m] = True
+    return ph
 
 
 def razao(a, b):
     return difflib.SequenceMatcher(None, tokens(a), tokens(b), autojunk=False).ratio()
 
 
-def classifica(mod, tr):
+def compara(mod_txt, segs, alternativa=False):
+    """Compara um item do TR com o do modelo.
+
+    Duas visões do TR:
+      1. original = texto sem cor (normal + tachado): tem de ser o texto do modelo, salvo as
+         lacunas que deram lugar a texto colorido;
+      2. nova = texto sem o tachado: o texto colorido não pode repetir o modelo, salvo o
+         trecho que está tachado (o ajuste reescreve a frase toda, como no exemplo do IPP).
+
+    Devolve dict com classe, tipos, tokens marcados (tt, flag_tr), tokens do modelo (tm,
+    flag_mod) e avisos.
+    """
+    tm = tokens(mod_txt)
+    ph = lacunas(tm)
+    tt = tokens_tr(segs)
+    n = len(tt)
+    flag_tr, flag_mod = [None] * n, [None] * len(tm)
+    mapa = {}                       # índice em tt -> índice em tm (visão original, iguais)
+
+    # 1. visão original
+    idx1 = [j for j, (_, a) in enumerate(tt) if a not in MARCAS_COR]
+    sm = difflib.SequenceMatcher(None, tm, [tt[j][0] for j in idx1], autojunk=False)
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        js = idx1[j1:j2]
+        if tag == "equal":
+            for i, j in zip(range(i1, i2), js):
+                mapa[j] = i
+                if tt[j][1] == "tachado":
+                    flag_mod[i] = "tc"
+            continue
+        for j in js:
+            flag_tr[j] = "tf" if tt[j][1] == "tachado" else "sm"
+        if i2 > i1:
+            lo = idx1[j1 - 1] if j1 > 0 else -1
+            hi = idx1[j2] if j2 < len(idx1) else n
+            cor = {tt[j][1] for j in range(lo + 1, hi) if tt[j][1] in MARCAS_COR}
+            for i in range(i1, i2):
+                # lacuna substituída por texto colorido: ok; marca .azul legada: tolerada
+                if not ((ph[i] and cor) or "azul" in cor):
+                    flag_mod[i] = "del"
+    tachado_mod = {i for i, f in enumerate(flag_mod) if f == "tc"}
+
+    # 2. visão nova
+    idx2 = [j for j, (_, a) in enumerate(tt) if a != "tachado"]
+    sm2 = difflib.SequenceMatcher(None, tm, [tt[j][0] for j in idx2], autojunk=False)
+    for tag, i1, i2, j1, j2 in sm2.get_opcodes():
+        if tag != "equal":
+            continue
+        run = []
+        for i, j in zip(range(i1, i2), idx2[j1:j2]):
+            if tt[j][1] in MARCAS_COR and not ph[i] and i not in tachado_mod:
+                run.append(j)
+                if len(run) > TOLERANCIA_COR:
+                    for x in run:
+                        flag_tr[x] = flag_tr[x] or "ex"
+            else:
+                run = []
+    todo_cor = n > 0 and all(a in MARCAS_COR for _, a in tt)
+    if todo_cor and razao(mod_txt, texto_tr(segs)) < 0.5:
+        # substituição integral: as palavras coincidentes ("de", "Gov.br") não são excesso
+        flag_tr = [None if f == "ex" else f for f in flag_tr]
+
+    # tipos de afastamento e escolhas entre alternativas
+    tipos, avisos = set(), []
+    todo_tachado = n > 0 and all(a == "tachado" for _, a in tt)
+    j = 0
+    while j < n:
+        a = tt[j][1]
+        if a == "tachado":
+            k = j
+            while k < n and tt[k][1] == "tachado":
+                k += 1
+            ims = [mapa[x] for x in range(j, k) if x in mapa]
+            escolha = (any(tm[i] == "OU" for i in ims) or (ims and all(ph[i] for i in ims))
+                       or (todo_tachado and alternativa))
+            seguinte = tt[k][1] if k < n else None
+            if seguinte != "ajuste" and not escolha:
+                tipos.add("supressao")
+            j = k
+            continue
+        if a in MARCAS_COR:
+            tipos.add(a)
+            if a == "ajuste" and (j == 0 or tt[j - 1][1] not in ("tachado", "ajuste")):
+                avisos.append("trecho verde sem o texto original tachado antes dele "
+                              "(é inclusão?)")
+        j += 1
+    if "preenchimento" in tipos and not any(ph) and "OU" not in tm:
+        avisos.append("azul em item sem lacuna no modelo (é ajuste ou inclusão?)")
+    if "azul" in tipos:
+        avisos.append("marca .azul (convenção anterior): migrar para o código do IPP")
+
+    if "sm" in flag_tr:
+        cls = "ALTERADO-SEM-MARCA"
+    elif "tf" in flag_tr:
+        cls = "TACHADO-FORA-DO-MODELO"
+    elif "ex" in flag_tr:
+        cls = "COR-EXCESSIVA"
+    elif "del" in flag_mod:
+        cls = "SUPRESSAO-SEM-TACHADO"
+    elif todo_tachado:
+        cls = "SUPRIMIDO"
+    elif not tipos and not any(a for _, a in tt):
+        cls = "IDENTICO"
+    elif tipos <= {"preenchimento"}:
+        cls = "PREENCHIDO"
+    else:
+        cls = "ALTERADO-MARCADO"
+    return {"classe": cls, "tipos": tipos, "tt": tt, "flag_tr": flag_tr, "tm": tm,
+            "flag_mod": flag_mod, "avisos": avisos}
+
+
+def alternativas(ordem_mod):
+    """Itens do modelo vizinhos a um "OU" isolado: alternativas excludentes."""
+    alt, ant, pendente = set(), None, False
+    for tipo, v in ordem_mod:
+        if tipo == "ou":
+            if ant:
+                alt.add(ant)
+            pendente = True
+        elif tipo == "item":
+            if pendente:
+                alt.add(v)
+            ant, pendente = v, False
+    return alt
+
+
+def classifica(mod, tr, alt=frozenset()):
     res = {}
     por_cap = defaultdict(list)
     for n in mod:
@@ -342,28 +359,23 @@ def classifica(mod, tr):
         segs = it["segs"]
         m = mod.get(n)
         mtxt = " ".join(m["texto"]) if m else ""
-        if eh_suprimido(segs):
-            cls = "SUPRIMIDO" if m and all(a for t, a in segs if t.strip()) else (
-                  "SUPRIMIDO" if m else "INCLUIDO-SEM-MARCA")
-            if m and not all(a for t, a in segs if t.strip()):
-                cls = "ALTERADO-SEM-MARCA"
-            res[n] = {"classe": cls, "ops": None, "modelo": mtxt}
-            continue
         if not m:
-            todo_azul = all(a for t, a in segs if t.strip() and t != "\n")
-            res[n] = {"classe": "INCLUIDO" if todo_azul else "INCLUIDO-SEM-MARCA",
-                      "ops": None, "modelo": ""}
+            tt = tokens_tr(segs)
+            ok = tt and all(a in ("inclusao", "azul") for _, a in tt)
+            outras = tt and all(a in MARCAS_COR for _, a in tt)
+            avisos = []
+            if not ok and outras:
+                avisos.append("item novo deveria estar todo em vermelho (inclusão)")
+            res[n] = {"classe": "INCLUIDO" if outras else "INCLUIDO-SEM-MARCA",
+                      "tipos": {"inclusao"}, "tt": tt,
+                      "flag_tr": [None if a in MARCAS_COR else "sm" for _, a in tt],
+                      "tm": [], "flag_mod": [], "avisos": avisos, "modelo": ""}
             continue
-        cls, ops = compara(mtxt, segs)
-        if cls == "IDENTICO" and it.get("tabela"):
-            cls = "ALTERADO-MARCADO"   # tabela do modelo preenchida (conferir à parte)
-        # substituição integral: item todo em azul com texto sem relação com o do modelo —
-        # as palavras coincidentes ("de", "Plataforma Gov.br") não são azul excessivo
-        if (cls == "AZUL-EXCESSIVO" and all(a for t, a in segs if t.strip() and t != "\n")
-                and razao(mtxt, texto_tr(segs)) < 0.5):
-            cls = "ALTERADO-MARCADO"
-        info = {"classe": cls, "ops": ops, "modelo": mtxt}
-        if cls in ("ALTERADO-SEM-MARCA",) and not all(a for t, a in segs if t.strip()):
+        info = compara(mtxt, segs, alternativa=n in alt)
+        info["modelo"] = mtxt
+        if info["classe"] == "IDENTICO" and it.get("tabela"):
+            info["classe"] = "PREENCHIDO"   # tabela do modelo preenchida (conferir à parte)
+        if info["classe"] == "ALTERADO-SEM-MARCA":
             preto = " ".join(t for t, a in segs if not a and t != "\n")
             r0 = razao(mtxt, texto_tr(segs))
             if r0 < 0.6 and len(tokens(preto)) >= 6:
@@ -378,9 +390,10 @@ def classifica(mod, tr):
                     info["classe"] = "NUMERACAO-DESLOCADA"
                     info["corresponde"] = melhor
         res[n] = info
-    ausentes = [n for n in mod if n not in tr]
-    for n in ausentes:
-        res[n] = {"classe": "AUSENTE", "ops": None, "modelo": " ".join(mod[n]["texto"])}
+    for n in mod:
+        if n not in tr:
+            res[n] = {"classe": "AUSENTE", "tipos": set(), "avisos": [],
+                      "modelo": " ".join(mod[n]["texto"])}
     return res
 
 
@@ -415,14 +428,26 @@ def coberto(n, citados):
     return False
 
 
+
+# ------------------------------------------------------------------ justificativas
+def justificado(n, tr):
+    """O item, ou um ascendente, tem bloco ::: justificativa no TR."""
+    partes = n.split(".")
+    for i in range(len(partes), 1, -1):
+        p = ".".join(partes[:i])
+        if p in tr and tr[p]["justificativa"]:
+            return True
+    return False
+
+
 # ------------------------------------------------------------------ relatório HTML
 CORES = {
-    "IDENTICO": "#e8f5e9", "ALTERADO-MARCADO": "#e3f2fd", "SUPRIMIDO": "#eceff1",
-    "INCLUIDO": "#e3f2fd", "ALTERADO-SEM-MARCA": "#ffcdd2", "AZUL-EXCESSIVO": "#fff3c4",
+    "IDENTICO": "#e8f5e9", "PREENCHIDO": "#e3f2fd", "ALTERADO-MARCADO": "#e3f2fd",
+    "SUPRIMIDO": "#eceff1", "INCLUIDO": "#e3f2fd",
+    "ALTERADO-SEM-MARCA": "#ffcdd2", "TACHADO-FORA-DO-MODELO": "#ffcdd2",
+    "COR-EXCESSIVA": "#fff3c4", "SUPRESSAO-SEM-TACHADO": "#ffcdd2",
     "INCLUIDO-SEM-MARCA": "#ffcdd2", "NUMERACAO-DESLOCADA": "#ffcdd2", "AUSENTE": "#ffcdd2",
 }
-
-
 def e(x):
     return html.escape(x, quote=False)
 
@@ -438,40 +463,39 @@ def junta(tks):
     return s
 
 
-def render_ops(ops):
-    mod, tr = [], []
-    for tag, mt, trt in ops:
-        if tag in ("replace", "delete") and mt:
-            mod.append(f'<del>{e(junta(mt))}</del>')
-        elif mt:
-            mod.append(e(junta(mt)))
-        grupo, cur = [], None
-        for tk, az in trt:
-            k = ("eqaz" if az else "eq") if tag == "equal" else ("az" if az else "sm")
-            if k != cur and grupo:
-                tr.append((cur, grupo)); grupo = []
-            cur = k; grupo.append(tk)
-        if grupo:
-            tr.append((cur, grupo))
-    cls = {"eq": None, "az": "az", "sm": "sm", "eqaz": "ex"}
+
+
+def render_tokens(tt, flags):
+    """Tokens do TR agrupados por (marca, alerta)."""
+    grupos, cur, buf = [], None, []
+    for (tk, a), f in zip(tt, flags):
+        k = (a, f)
+        if k != cur and buf:
+            grupos.append((cur, buf)); buf = []
+        cur = k; buf.append(tk)
+    if buf:
+        grupos.append((cur, buf))
     out = []
-    for k, g in tr:
+    for (a, f), g in grupos:
+        cls = " ".join(c for c in (a, f) if c)
         t = e(junta(g))
-        out.append(f'<span class="{cls[k]}">{t}</span>' if cls[k] else t)
-    return " ".join(mod), " ".join(out)
-
-
-def render_segs(segs):
-    out = []
-    for t, a in segs:
-        if t == "\n":
-            out.append("<br>")
-        else:
-            out.append(f'<span class="az">{e(t)}</span>' if a else e(t))
+        out.append(f'<span class="{cls}">{t}</span>' if cls else t)
     return " ".join(out)
 
 
-def relatorio(mod, tr, res, capitulos, faltam_desp, desp_sobra, mod_caps):
+def render_modelo(tm, flags):
+    out, cur, buf = [], None, []
+    for tk, f in zip(tm, flags):
+        if f != cur and buf:
+            out.append((cur, buf)); buf = []
+        cur = f; buf.append(tk)
+    if buf:
+        out.append((cur, buf))
+    return " ".join(f"<del>{e(junta(g))}</del>" if f == "del" else e(junta(g))
+                    for f, g in out)
+
+
+def relatorio(mod, tr, res, capitulos, faltam_just, just_sobra, mod_caps):
     cont = Counter(r["classe"] for r in res.values())
     linhas = []
     cap_ant = None
@@ -487,28 +511,34 @@ def relatorio(mod, tr, res, capitulos, faltam_desp, desp_sobra, mod_caps):
         r = res[n]
         c = r["classe"]
         it = tr.get(n)
-        if r.get("ops"):
-            mh, th = render_ops(r["ops"])
-        else:
-            mh = e(r["modelo"]) if r["modelo"] else "<i>—</i>"
-            th = render_segs(it["segs"]) if it else "<i>(ausente no TR)</i>"
+        mh = (render_modelo(r["tm"], r["flag_mod"]) if r.get("tm")
+              else e(r["modelo"]) if r["modelo"] else "<i>—</i>")
+        th = render_tokens(r["tt"], r["flag_tr"]) if it else "<i>(ausente no TR)</i>"
+        if it and it["justificativa"]:
+            th += "".join(f'<div class="justificativa">{e(p)}</div>' for p in it["justificativa"])
         extra = []
+        if r.get("tipos"):
+            extra.append("tipos: " + tm_.rotulo(r["tipos"]).lower())
         if r.get("corresponde"):
             extra.append(f'texto corresponde ao item {r["corresponde"]} do modelo')
         if it and it.get("tabela"):
             extra.append("contém tabela (conferir à parte)")
-        if n in faltam_desp:
-            extra.append("<b>sem linha no despacho</b>")
+        if n in faltam_just:
+            extra.append("<b>sem justificativa</b>")
+        if n in just_sobra:
+            extra.append("<b>justificativa sem afastamento</b>")
         if it and it.get("duplicado"):
             extra.append("<b>número duplicado no TR</b>")
+        extra += [f"aviso: {e(a)}" for a in r.get("avisos", [])]
         nota = f'<div class="nota">{"; ".join(extra)}</div>' if extra else ""
         linhas.append(f'<tr class="l {c}" style="--bg:{CORES[c]}"><td class="n">{n}</td>'
                       f'<td class="c">{c}</td><td>{mh}</td><td>{th}{nota}</td></tr>')
     filtros = "".join(
         f'<label style="background:{CORES[k]}"><input type="checkbox" checked data-c="{k}"> '
         f'{k} ({cont.get(k, 0)})</label>' for k in CORES)
-    sobra = ("<p><b>Linhas do despacho sem afastamento correspondente no TR:</b> "
-             + ", ".join(sorted(desp_sobra, key=chave)) + "</p>") if desp_sobra else ""
+    sobra = ("<p><b>Justificativas sem afastamento correspondente no TR:</b> "
+             + ", ".join(sorted(just_sobra, key=chave)) + "</p>") if just_sobra else ""
+    c = tm_.CORES
     return f"""<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <title>Conferência TR × Modelo AGU</title><style>
 body{{font-family:system-ui,sans-serif;font-size:14px;margin:16px;color:#111;background:#fff}}
@@ -516,16 +546,20 @@ table{{border-collapse:collapse;width:100%}} td{{border:1px solid #ccc;padding:4
 tr.l td{{background:var(--bg)}} tr.l td:nth-child(3),tr.l td:nth-child(4){{background:#fff;width:42%}}
 td.n{{white-space:nowrap;font-weight:600}} td.c{{font-size:11px;white-space:nowrap}}
 tr.cap td{{background:#263238;color:#fff;font-weight:600}}
-.az{{color:#0000cc}} .sm{{background:#ffcdd2;color:#b71c1c;font-weight:600}}
-.ex{{color:#0000cc;background:#fff3c4}} del{{color:#b71c1c}}
+.inclusao{{color:{c["inclusao"]}}} .ajuste{{color:{c["ajuste"]}}} .preenchimento{{color:{c["preenchimento"]}}}
+.azul{{color:{c["azul"]}}} .tachado{{text-decoration:line-through}}
+.justificativa{{color:{c["justificativa"]};margin-top:4px}}
+.sm,.tf{{background:#ffcdd2;outline:1px solid #b71c1c}} .ex{{background:#fff3c4}} del{{color:#b71c1c;background:#ffcdd2}}
 .nota{{font-size:12px;color:#555;margin-top:4px}} label{{display:inline-block;margin:2px;padding:2px 6px;border-radius:4px;font-size:12px}}
 .leg span{{padding:0 4px}}
 </style></head><body>
 <h1>Conferência do TR contra o {e(MODELO_NOME)}</h1>
-<p class="leg">Coluna do TR: <span class="az">azul</span> = marcado como alteração;
-<span class="sm">vermelho</span> = difere do modelo sem marcação;
-<span class="ex">azul em amarelo</span> = azul sobre texto idêntico ao modelo.
-Coluna do modelo: <del>riscado</del> = texto do modelo substituído ou retirado.</p>
+<p class="leg">Coluna do TR, no código do IPP AGU/MGI: <span class="inclusao">inclusão</span>,
+<span class="ajuste">ajuste</span>, <span class="preenchimento">preenchimento</span>,
+<span class="tachado">supressão</span>, <span class="justificativa">justificativa</span>.
+Alertas: <span class="sm">fundo vermelho</span> = difere do modelo sem cor, ou tachado que não é o
+texto do modelo; <span class="ex">fundo amarelo</span> = cor sobre texto idêntico ao modelo.
+Coluna do modelo: <del>vermelho riscado</del> = texto do modelo apagado em vez de tachado.</p>
 <div>{filtros}</div>{sobra}
 <table>{"".join(linhas)}</table>
 <script>
@@ -559,6 +593,7 @@ def grava_numerado(mod, ordem):
     print(f">> {os.path.relpath(NUMERADO, RAIZ)}")
 
 
+
 def main():
     mod_todos, ordem_mod = le_modelo()
     mod_caps = {n: v["texto"][0] for n, v in mod_todos.items() if "." not in n}
@@ -566,25 +601,31 @@ def main():
     if "--numerado" in sys.argv:
         grava_numerado(mod_todos, ordem_mod)
     tr, ordem_tr, capitulos = le_tr()
-    res = classifica(mod, tr)
+    res = classifica(mod, tr, alternativas(ordem_mod))
 
+    # Justificativas: no TR (::: justificativa) ou, legado, em linha A/I/E do despacho.
     citados = le_despacho()
-    afast = {n for n, r in res.items() if r["classe"] not in ("IDENTICO", "AUSENTE")}
-    faltam_desp = {n for n in afast if not coberto(n, citados)}
+    exige = {n for n, r in res.items() if r.get("tipos", set()) - {"preenchimento"}}
+    faltam_just = {n for n in exige if not justificado(n, tr) and not coberto(n, citados)}
+    via_despacho = {n for n in exige if not justificado(n, tr) and coberto(n, citados)}
+    marcados = {n for n, r in res.items() if r["classe"] not in ("IDENTICO", "AUSENTE")}
+    just_sobra = {n for n, it in tr.items() if it["justificativa"]
+                  and not any(a == n or a.startswith(n + ".") for a in marcados)}
     itens_desp = {c[1] for c in citados if c[0] == "item"}
-    desp_sobra = {n for n in itens_desp
-                  if n in res and res[n]["classe"] == "IDENTICO"
-                  and not any(a.startswith(n + ".") for a in afast)}
+    just_sobra |= {n for n in itens_desp
+                   if n in res and res[n]["classe"] == "IDENTICO"
+                   and not any(a.startswith(n + ".") for a in marcados)}
+    avulsas = getattr(tm_.le_tr, "avulsas", [])
 
     os.makedirs(os.path.dirname(SAIDA), exist_ok=True)
     open(SAIDA, "w", encoding="utf-8").write(
-        relatorio(mod, tr, res, capitulos, faltam_desp, desp_sobra, mod_caps))
+        relatorio(mod, tr, res, capitulos, faltam_just, just_sobra, mod_caps))
 
     cont = Counter(r["classe"] for r in res.values())
     print(f"Modelo: {len(mod)} itens em {len(mod_caps)} capítulos. TR: {len(tr)} itens.")
     for k in CORES:
         if cont.get(k):
-            print(f"  {k:22s} {cont[k]:4d}{'   <- erro' if k in ERROS else ''}")
+            print(f"  {k:24s} {cont[k]:4d}{'   <- erro' if k in ERROS else ''}")
     caps_div = [c for c in mod_caps
                 if normaliza(mod_caps[c]).upper() != capitulos.get(c, ("",))[0].upper()]
     if caps_div:
@@ -592,10 +633,22 @@ def main():
     recuo = [n for n, it in tr.items() if it["recuo"] >= 4]
     if recuo:
         print(f"  itens com recuo >= 4 espaços (viram bloco de código): {len(recuo)}")
-    print(f"  afastamentos sem linha no despacho: {len(faltam_desp)}")
-    print(f"  linhas do despacho sem afastamento: {len(desp_sobra)}")
+    print(f"  afastamentos sem justificativa: {len(faltam_just)}"
+          + (f" ({', '.join(sorted(faltam_just, key=chave)[:10])}…)" if faltam_just else ""))
+    print(f"  justificativas sem afastamento: {len(just_sobra)}"
+          + (f" ({', '.join(sorted(just_sobra, key=chave))})" if just_sobra else ""))
+    if avulsas:
+        print(f"  justificativas fora de item (não vão ao despacho): {len(avulsas)} "
+              f"({', '.join(sorted({a for a, _ in avulsas}))})")
+    if via_despacho:
+        print(f"  AVISO: {len(via_despacho)} afastamento(s) justificado(s) só em linha A/I/E de "
+              "scripts/gerar-despacho.py; leve o texto para ::: justificativa no TR")
+    n_avisos = sum(1 for r in res.values() if r.get("avisos"))
+    if n_avisos:
+        print(f"  AVISO: {n_avisos} item(ns) com aviso de semântica das cores (ver relatório)")
     print(f">> {os.path.relpath(SAIDA, RAIZ)}")
-    erro = any(cont.get(k) for k in ERROS) or caps_div or recuo or faltam_desp or desp_sobra
+    erro = (any(cont.get(k) for k in ERROS) or caps_div or recuo or faltam_just or just_sobra
+            or avulsas)
     sys.exit(1 if erro else 0)
 
 

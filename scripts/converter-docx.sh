@@ -6,9 +6,11 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+source scripts/_ambiente.sh   # PANDOC: o do .venv (pypandoc_binary) ou o do sistema
+[[ -n "$PANDOC" ]] || { echo "ERRO: pandoc ausente (veja requirements.txt)" >&2; exit 1; }
 
 src="${1:?Informe o caminho do .docx}"
 dst="${2:-templates/$(basename "${src%.*}").md}"
 
-pandoc -f docx -t gfm --wrap=none "$src" -o "$dst"
+"$PANDOC" -f docx -t gfm --wrap=none "$src" -o "$dst"
 echo ">> $dst"
